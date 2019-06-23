@@ -31,6 +31,19 @@ namespace sticker_man
             GL.End();
         }
 
+        public void Mover(double tx, double ty, double tz)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public List<Ponto4D> GetPontos()
+        {
+            List<Ponto4D> points = new List<Ponto4D>();
+            points.Add(inicio);
+            points.Add(fim);
+
+            return points;
+        }
     }
 
 }

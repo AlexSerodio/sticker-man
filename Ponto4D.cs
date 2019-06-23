@@ -1,3 +1,5 @@
+using System;
+
 namespace sticker_man
 {
   public class Ponto4D
@@ -6,14 +8,14 @@ namespace sticker_man
     private double x;
     private double y;
     private double z;
-    private double w;
+    private readonly double w;
 
-    public Ponto4D(double x = 0.0, double y = 0.0, double z = 0.0)
+    public Ponto4D(double x = 0.0, double y = 0.0, double z = 0.0, double w = 1.0)
     {
       this.x = x;
       this.y = y;
       this.z = z;
-      this.w = 1;
+      this.w = w;
     }
 
     public static Ponto4D operator +(Ponto4D pto1, Ponto4D pto2) => new Ponto4D(pto1.X + pto2.X, pto1.Y + pto2.Y, pto1.Z + pto2.Z);
@@ -29,19 +31,32 @@ namespace sticker_man
     public double X { get => x; set => x = value; }
     public double Y { get => y; set => y = value; }
     public double Z { get => z; set => z = value; }
+    public double W { get => w; }
 
-    // override object.Equals
+    /// <summary>
+    /// Inverte todos os valores das coordenadas do ponto
+    /// </summary>
+    public void InverterSinal()
+    {
+      x *= -1;
+      y *= -1;
+      z *= -1;
+    }
+
+    public override string ToString() => "{ X: " + X + " | Y: " + Y + " }";
+    
     public override bool Equals(object obj)
     {
-        if (obj == null || GetType() != obj.GetType())
-          return false;
+      if (obj == null || GetType() != obj.GetType())
+        return false;
 
-        Ponto4D ponto = (Ponto4D) obj;
-        
-        if((ponto.X != this.X) || (ponto.Y != this.Y)|| (ponto.Z != this.Z))
-          return false;
+      Ponto4D ponto = (Ponto4D) obj;
+      
+      if((ponto.X != this.X) || (ponto.Y != this.Y)|| (ponto.Z != this.Z))
+        return false;
 
-        return true;
+      return true;
     }
+    
   }
 }

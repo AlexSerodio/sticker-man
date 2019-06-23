@@ -4,12 +4,13 @@ using OpenTK.Graphics.OpenGL;
 
 namespace sticker_man
 {
-    class SrPalito : Desenho
+    class SrPalito : Desenho, Objeto
     {
 
         private Ponto4D raiz;
         private Dictionary<TipoDeMembros, Membro> membros;
         private BoundBox boundBox= new BoundBox();
+        private Transformacao4D transformacao;
 
         public Ponto4D Raiz { get => raiz; set => raiz = value; }
 
@@ -17,6 +18,7 @@ namespace sticker_man
         {
             this.raiz = (raiz != null) ? raiz : new Ponto4D();
             membros = new Dictionary<TipoDeMembros, Membro>();
+            transformacao = new Transformacao4D();
 
             ConstruirCorpo(raiz);
             DefinirBoundBox();
@@ -51,13 +53,43 @@ namespace sticker_man
             boundBox.AtualizarBBox(membros[TipoDeMembros.CABECA].GetFinal());
         }
 
+        /// <summary>
+        /// Altera a translação do polígono e todos os seus filhos com base nos valores especificados.
+        /// </summary>
+        /// <param name="tx">Nova posição X.</param>
+        /// <param name="ty">Nova posição Y.</param>
+        /// <param name="tz">Nova posição Z (0 por padrão).</param>
+        public void Mover(double tx, double ty, double tz = 0)
+        {
+            Transformacao4D novaTransformacao = new Transformacao4D();
+            novaTransformacao.AtribuirTranslacao(tx, ty, tz);
+
+            transformacao = novaTransformacao.TransformMatrix(transformacao);
+            boundBox.AtualizarBBox(GetPontos());
+        }
+
         public void Desenhar()
         {
+            GL.PushMatrix();
+            GL.MultMatrix(transformacao.GetData());
+
             foreach(var membro in membros)
                 membro.Value.Desenhar();
 
             boundBox.DesenharBBox();
+            
+            GL.PopMatrix();
         }
+
+        public List<Ponto4D> GetPontos()
+        {
+            List<Ponto4D> points = new List<Ponto4D>();
+            foreach(var membro in membros)
+                points.AddRange(membro.Value.GetPontos());
+
+            return points;
+        }
+
     }
 
 }

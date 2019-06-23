@@ -1,4 +1,5 @@
 using OpenTK.Graphics.OpenGL;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace sticker_man
@@ -6,77 +7,77 @@ namespace sticker_man
     internal class BoundBox {
         
         private double menorX, menorY, menorZ, maiorX, maiorY, maiorZ;
+
         private Ponto4D centro = new Ponto4D();
-
-        public double MenorX { get => menorX; }
-        public double MenorY { get => menorY; }
-        public double MenorZ { get => menorZ; }
-        public double MaiorX { get => maiorX; }
-        public double MaiorY { get => maiorY; }
-        public double MaiorZ { get => maiorZ; }
-        public Ponto4D Centro { get => centro; }
-
-        public BoundBox(double menorX=0, double menorY=0, double menorZ=0, double maiorX=0, double maiorY=0, double maiorZ=0) 
-        {
-            this.menorX = menorX; 
-            this.menorY = menorY; 
-            this.menorZ = menorZ; 
-            this.maiorX = maiorX; 
-            this.maiorY = maiorY; 
-            this.maiorZ = maiorZ;
+        public BoundBox(double menorX=0, double menorY=0, double menorZ=0, double maiorX=0, double maiorY=0, double maiorZ=0) {
+            this.menorX = menorX; this.menorY = menorY; this.menorZ = menorZ;
+            this.maiorX = maiorX; this.maiorY = maiorY; this.maiorZ = maiorZ;
         }
 
-        public void AtribuirBBox(Ponto4D pto) 
-        {
-            this.menorX = pto.X; this.menorY = pto.Y; this.menorZ = pto.Z;
-            this.maiorX = pto.X; this.maiorY = pto.Y; this.maiorZ = pto.Z;
+        public double ObterMenorX => menorX;
+        public double ObterMenorY => menorY;
+        public double ObterMenorZ => menorZ;
+        public double ObterMaiorX => maiorX;
+        public double ObterMaiorY => maiorY;
+        public double ObterMaiorZ => maiorZ;
+        public Ponto4D ObterCentro => centro;
+
+        public void AtribuirBBox(Ponto4D pto) {
+            this.menorX = pto.X;
+            this.menorY = pto.Y;
+            this.menorZ = pto.Z;
+            this.maiorX = pto.X;
+            this.maiorY = pto.Y;
+            this.maiorZ = pto.Z;
+            
             ProcessarCentroBBox();
         }
             
-        public void AtualizarBBox(Ponto4D pto) 
-        {
+        public void AtualizarBBox(Ponto4D pto) {
             AtualizarBBox(pto.X, pto.Y, pto.Z);
         }
 
-        public void AtualizarBBox(double x, double y, double z) 
-        {
-            if (x < menorX) {
+        public void AtualizarBBox(double x, double y, double z) {
+            if (x < menorX)
                 menorX = x;
-            } else {
-                if (x > maiorX) 
-                    maiorX = x;
-            }
-            if (y < menorY) {
+            else if (x > maiorX)
+                maiorX = x;
+            
+            if (y < menorY)
                 menorY = y;
-            } else {
-                if (y > maiorY) 
-                    maiorY = y;
-            }
-            if (z < menorZ) {
-                menorZ = z;
-            } else {
-                if (z > maiorZ) 
-                    maiorZ = z;
-            }
-        }
-        
-        public void ProcessarCentroBBox() 
-        {
-            centro.X = (maiorX + menorX)/2;
-            centro.Y = (maiorY + menorY)/2;
-            centro.Z = (maiorZ + menorZ)/2;
+            else  if (y > maiorY)
+                maiorY = y;
+
+            ProcessarCentroBBox();
         }
 
-        public bool EstaDentro(Ponto4D ponto)
+        public void AtualizarBBox(List<Ponto4D> pontos) {
+            foreach(Ponto4D ponto in pontos)
+                AtualizarBBox(ponto.X, ponto.Y, ponto.Z);
+
+            ProcessarCentroBBox();
+        }
+        
+        public void ProcessarCentroBBox() {
+            centro.X = (maiorX + menorX) / 2;
+            centro.Y = (maiorY + menorY) / 2;
+            centro.Z = (maiorZ + menorZ) / 2;
+        }
+
+        /// <summary>
+        /// Testa se o ponto informado está dentro do polígono informado.
+        /// </summary>
+        /// <param name="ponto">O ponto a ser testado.</param>
+        /// <param name="poligono">O polígono a ser testado.</param>
+        /// <returns></returns>
+        public bool EstaDentro(Ponto4D ponto, Poligono poligono)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
-                            if(ponto.Z < maiorZ) {
-                                if(ponto.Z > menorZ)
-                                    return true;
-                            }
+                            int resultado = ScanLine(ponto, poligono);
+                            return resultado % 2 != 0;
                         }
                     }
                 }
@@ -84,9 +85,36 @@ namespace sticker_man
 
             return false;
         }
+        
+        /// <summary>
+        /// Checa se o ponto informado está dentro ou fora do polígono informado através do Algoritmo ScanLine.
+        /// </summary>
+        /// <param name="pontoClicado">O ponto a ser testado.</param>
+        /// <param name="poligono">O polígono a ser testado.</param>
+        /// <returns>Par se o clique ocorreu fora do polígono e ímpar caso contrário.</returns>
+        private int ScanLine(Ponto4D pontoClicado, Poligono poligono)
+        {
+            int paridade = 0;
+            double ti = 0;
+            for(int i = 0, j = 1; i < poligono.Pontos.Count; i++, j++) {
+
+                if(j > poligono.Pontos.Count - 1)
+                    j = 0;
+
+                ti = (pontoClicado.Y - poligono.Pontos[i].Y) / (poligono.Pontos[j].Y - poligono.Pontos[i].Y);
+
+                if(ti > 0 && ti < 1) {
+                    double x = poligono.Pontos[i].X + (poligono.Pontos[j].X - poligono.Pontos[i].X) * ti;
+                    if(x > pontoClicado.X)
+                        paridade++;
+                }
+            }
+            
+            return paridade % 2;
+        }
 
         public void DesenharBBox() {
-            GL.Color3(Color.Brown);
+            GL.Color3(Color.Yellow);
 
             GL.PointSize(5);
             GL.Begin(PrimitiveType.Points);
@@ -94,11 +122,11 @@ namespace sticker_man
             GL.End();
 
             GL.LineWidth(1);
-                GL.Begin(PrimitiveType.LineLoop);
-                    GL.Vertex3(menorX, maiorY, menorZ);
-                    GL.Vertex3(maiorX, maiorY, menorZ);
-                    GL.Vertex3(maiorX, menorY, menorZ);
-                    GL.Vertex3(menorX, menorY, menorZ);
+            GL.Begin(PrimitiveType.LineLoop);
+                GL.Vertex3(menorX, maiorY, menorZ);
+                GL.Vertex3(maiorX, maiorY, menorZ);
+                GL.Vertex3(maiorX, menorY, menorZ);
+                GL.Vertex3(menorX, menorY, menorZ);
             GL.End();
             GL.Begin(PrimitiveType.LineLoop);
                 GL.Vertex3(menorX, menorY, menorZ);
@@ -119,6 +147,8 @@ namespace sticker_man
                 GL.Vertex3(maiorX, menorY, maiorZ);
             GL.End();
         }
+
+        public override string ToString() => "{ Xmin: " + menorX + " | Xmax: " + maiorX + " }\n{ Ymin: " + menorY + " | Ymax: " + maiorY + " }";
 
     }
 }

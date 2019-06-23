@@ -9,12 +9,19 @@ namespace sticker_man
   class Render : GameWindow
   {
 
-    private SrPalito srPalito = new SrPalito(new Ponto4D(-200, -200));
-    private Mundo mundo = new Mundo();
-    private Camera camera = new Camera(-400, 400, -400, 400, -1, 1);
+    private SrPalito srPalito;
+    private Camera camera;
     private double moveSpeed = 2.0;
+    private double jumpSpeed = 2.0;
+    private double jumpLimit = 50.0;
+    private bool jumping = false;
 
-    public Render(int width, int height) : base(width, height) { }
+    public Render(int width, int height) : base(width, height) { 
+
+      camera = new Camera(-width/2, width/2, -height/2, height/2, -1, 1);
+      srPalito = new SrPalito(new Ponto4D(-200, -200));
+
+    }
 
     protected override void OnLoad(EventArgs e)
     {
@@ -25,6 +32,9 @@ namespace sticker_man
     {
       base.OnUpdateFrame(e);
 
+      TratarTeclasPressionadas();
+
+
       camera.Update();
     }
 
@@ -32,7 +42,6 @@ namespace sticker_man
     {
       base.OnKeyDown(e);
 
-      TratarTeclasPressionadas(e);
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -48,12 +57,22 @@ namespace sticker_man
       this.SwapBuffers();
     }
 
-    private void TratarTeclasPressionadas(KeyboardKeyEventArgs e) 
+    private void TratarTeclasPressionadas() 
     {
-      switch(e.Key) {
-        case Key.Space: 
-          break;
-      }
+      KeyboardState keyState = Keyboard.GetState();
+
+      if(keyState.IsKeyDown(Key.A))
+        srPalito.Mover(-moveSpeed, 0, 0);
+
+      if(keyState.IsKeyDown(Key.D))
+        srPalito.Mover(moveSpeed, 0, 0);
+
+      if(keyState.IsKeyDown(Key.W))
+        srPalito.Mover(0, jumpSpeed, 0);
+
+      if(keyState.IsKeyDown(Key.S))
+        srPalito.Mover(0, -jumpSpeed, 0);
+
     }
   }
 }
