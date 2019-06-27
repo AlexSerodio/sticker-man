@@ -2,7 +2,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace sticker_man
 {
-  class Camera
+  public class Camera
   {
 
     private double left;

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace sticker_man
 {
-    class Mundo
+    public class World
     {
         private Camera camera;
 
-        public Mundo() 
+        public World() 
         {
             camera = new Camera(-400, 400, -400, 400, -1, 1);
         }

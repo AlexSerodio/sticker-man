@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace sticker_man
 {
-    internal class BoundBox {
+    public class BoundBox {
         
         private double menorX, menorY, menorZ, maiorX, maiorY, maiorZ;
 
@@ -70,13 +70,13 @@ namespace sticker_man
         /// <param name="ponto">O ponto a ser testado.</param>
         /// <param name="poligono">O polígono a ser testado.</param>
         /// <returns></returns>
-        public bool EstaDentro(Ponto4D ponto, Poligono poligono)
+        public bool EstaDentro(Ponto4D ponto, GameObject gameObject)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
-                            int resultado = ScanLine(ponto, poligono);
+                            int resultado = ScanLine(ponto, gameObject.GetVertices());
                             return resultado % 2 != 0;
                         }
                     }
@@ -92,19 +92,21 @@ namespace sticker_man
         /// <param name="pontoClicado">O ponto a ser testado.</param>
         /// <param name="poligono">O polígono a ser testado.</param>
         /// <returns>Par se o clique ocorreu fora do polígono e ímpar caso contrário.</returns>
-        private int ScanLine(Ponto4D pontoClicado, Poligono poligono)
+        private int ScanLine(Ponto4D pontoClicado, List<Ponto4D> vertices)
         {
+
+
             int paridade = 0;
             double ti = 0;
-            for(int i = 0, j = 1; i < poligono.Pontos.Count; i++, j++) {
+            for(int i = 0, j = 1; i < vertices.Count; i++, j++) {
 
-                if(j > poligono.Pontos.Count - 1)
+                if(j > vertices.Count - 1)
                     j = 0;
 
-                ti = (pontoClicado.Y - poligono.Pontos[i].Y) / (poligono.Pontos[j].Y - poligono.Pontos[i].Y);
+                ti = (pontoClicado.Y - vertices[i].Y) / (vertices[j].Y - vertices[i].Y);
 
                 if(ti > 0 && ti < 1) {
-                    double x = poligono.Pontos[i].X + (poligono.Pontos[j].X - poligono.Pontos[i].X) * ti;
+                    double x = vertices[i].X + (vertices[j].X - vertices[i].X) * ti;
                     if(x > pontoClicado.X)
                         paridade++;
                 }

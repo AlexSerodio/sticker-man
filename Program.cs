@@ -2,9 +2,9 @@
 
 namespace sticker_man
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Render window = new Render(600, 600);
             // window.Run();

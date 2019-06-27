@@ -6,10 +6,10 @@ using System.Drawing;
 
 namespace sticker_man
 {
-  class Render : GameWindow
+  public class Render : GameWindow
   {
 
-    private SrPalito srPalito;
+    private StickerMan srPalito;
     private Camera camera;
     private double moveSpeed = 2.0;
     private double jumpSpeed = 2.0;
@@ -19,7 +19,7 @@ namespace sticker_man
     public Render(int width, int height) : base(width, height) { 
 
       camera = new Camera(-width/2, width/2, -height/2, height/2, -1, 1);
-      srPalito = new SrPalito(new Ponto4D(-200, -200));
+      srPalito = new StickerMan(new Ponto4D(-200, -200));
 
     }
 
@@ -52,7 +52,7 @@ namespace sticker_man
       GL.ClearColor(Color.Gray);
       GL.MatrixMode(MatrixMode.Modelview);
 
-      srPalito.Desenhar();
+      srPalito.Draw();
 
       this.SwapBuffers();
     }
@@ -62,16 +62,16 @@ namespace sticker_man
       KeyboardState keyState = Keyboard.GetState();
 
       if(keyState.IsKeyDown(Key.A))
-        srPalito.Mover(-moveSpeed, 0, 0);
+        srPalito.Translate(-moveSpeed, 0, 0);
 
       if(keyState.IsKeyDown(Key.D))
-        srPalito.Mover(moveSpeed, 0, 0);
+        srPalito.Translate(moveSpeed, 0, 0);
 
       if(keyState.IsKeyDown(Key.W))
-        srPalito.Mover(0, jumpSpeed, 0);
+        srPalito.Translate(0, jumpSpeed, 0);
 
       if(keyState.IsKeyDown(Key.S))
-        srPalito.Mover(0, -jumpSpeed, 0);
+        srPalito.Translate(0, -jumpSpeed, 0);
 
     }
   }
