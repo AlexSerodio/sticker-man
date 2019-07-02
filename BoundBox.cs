@@ -1,6 +1,7 @@
 using OpenTK.Graphics.OpenGL;
 using System.Collections.Generic;
 using System.Drawing;
+using System;
 
 namespace sticker_man
 {
@@ -10,8 +11,12 @@ namespace sticker_man
 
         private Ponto4D centro = new Ponto4D();
         public BoundBox(double menorX=0, double menorY=0, double menorZ=0, double maiorX=0, double maiorY=0, double maiorZ=0) {
-            this.menorX = menorX; this.menorY = menorY; this.menorZ = menorZ;
-            this.maiorX = maiorX; this.maiorY = maiorY; this.maiorZ = maiorZ;
+            this.menorX = menorX; 
+            this.menorY = menorY; 
+            this.menorZ = menorZ;
+            this.maiorX = maiorX; 
+            this.maiorY = maiorY; 
+            this.maiorZ = maiorZ;
         }
 
         public double ObterMenorX => menorX;
@@ -51,33 +56,47 @@ namespace sticker_man
             ProcessarCentroBBox();
         }
 
-        public void AtualizarBBox(List<Ponto4D> pontos) {
+        public void AtualizarBBox(List<Ponto4D> pontos, Transformacao4D transform = null) {
+            AtribuirBBox(pontos[0]);
+
             foreach(Ponto4D ponto in pontos)
                 AtualizarBBox(ponto.X, ponto.Y, ponto.Z);
 
+            if(transform != null)
+                AtualizarPontos(transform);
+
             ProcessarCentroBBox();
         }
-        
+
+        public void AtualizarPontos(Transformacao4D transform) {
+            maiorX = transform.TransformPoint(new Ponto4D(maiorX, 0, 0)).X;
+            menorX = transform.TransformPoint(new Ponto4D(menorX, 0, 0)).X;
+            menorY = transform.TransformPoint(new Ponto4D(0, menorY, 0)).Y;
+            maiorY = transform.TransformPoint(new Ponto4D(0, maiorY, 0)).Y;
+        }
+
         public void ProcessarCentroBBox() {
             centro.X = (maiorX + menorX) / 2;
             centro.Y = (maiorY + menorY) / 2;
             centro.Z = (maiorZ + menorZ) / 2;
         }
 
-        /// <summary>
-        /// Testa se o ponto informado está dentro do polígono informado.
-        /// </summary>
-        /// <param name="ponto">O ponto a ser testado.</param>
-        /// <param name="poligono">O polígono a ser testado.</param>
-        /// <returns></returns>
-        public bool EstaDentro(Ponto4D ponto, GameObject gameObject)
+        public bool IsColliding(GameObject other)
+        {
+            foreach (Ponto4D vertice in other.GetVertices()) {
+                if(IsColliding(other.GetTransform().TransformPoint(vertice)))
+                    return true;
+            }
+            return false;
+        }
+
+        public bool IsColliding(Ponto4D ponto)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
-                            int resultado = ScanLine(ponto, gameObject.GetVertices());
-                            return resultado % 2 != 0;
+                            return true;
                         }
                     }
                 }
@@ -85,16 +104,9 @@ namespace sticker_man
 
             return false;
         }
-        
-        /// <summary>
-        /// Checa se o ponto informado está dentro ou fora do polígono informado através do Algoritmo ScanLine.
-        /// </summary>
-        /// <param name="pontoClicado">O ponto a ser testado.</param>
-        /// <param name="poligono">O polígono a ser testado.</param>
-        /// <returns>Par se o clique ocorreu fora do polígono e ímpar caso contrário.</returns>
+
         private int ScanLine(Ponto4D pontoClicado, List<Ponto4D> vertices)
         {
-
 
             int paridade = 0;
             double ti = 0;
@@ -150,7 +162,8 @@ namespace sticker_man
             GL.End();
         }
 
-        public override string ToString() => "{ Xmin: " + menorX + " | Xmax: " + maiorX + " }\n{ Ymin: " + menorY + " | Ymax: " + maiorY + " }";
+        public override string ToString() => "{ Xmin: " + menorX + " | Xmax: " + maiorX 
+                                            + " }\n{ Ymin: " + menorY + " | Ymax: " + maiorY + " }";
 
     }
 }

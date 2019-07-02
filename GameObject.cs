@@ -14,24 +14,35 @@ namespace sticker_man
         private Transformacao4D transform;
         private List<Ponto4D> vertices;
 
-        public GameObject() {
+        public GameObject(Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
             this.vertices = new List<Ponto4D>();
         }
 
-        public GameObject(List<Ponto4D> vertices) {
+        public GameObject(List<Ponto4D> vertices, Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
-            this.vertices = vertices;
+            SetVertices(vertices);
         }
 
-        public List<Ponto4D> GetVertices() => vertices;
+        public List<Ponto4D> GetVertices() => this.vertices;
 
         public void SetVertices(List<Ponto4D> vertices) {
-            this.vertices = vertices;
-            boundBox.AtualizarBBox(vertices);
+            this.vertices = new List<Ponto4D>();
+            this.vertices.AddRange(vertices);
+            boundBox.AtualizarBBox(this.vertices);
         }
+
+        public void SetTag(Tag tag) {
+            this.tag = tag;
+        }
+
+        public Tag GetTag() => tag;
+
+        public BoundBox GetBoundBox() => this.boundBox;
+
+        public Transformacao4D GetTransform() => transform;
 
         public virtual void Translate(double tx, double ty, double tz)
         {
@@ -39,7 +50,7 @@ namespace sticker_man
             newTransform.AtribuirTranslacao(tx, ty, tz);
 
             transform = newTransform.TransformMatrix(transform);
-            boundBox.AtualizarBBox(GetVertices());
+            boundBox.AtualizarBBox(this.vertices, transform);
         }
 
         public virtual void Scale(double factor)
@@ -56,17 +67,20 @@ namespace sticker_man
         {
             GL.PushMatrix();
             GL.MultMatrix(transform.GetData());
-
             GL.Color3(Color.Black);
             GL.LineWidth(3);
             GL.Begin(PrimitiveType.Lines);
-                foreach(Ponto4D vertex in vertices)
+                foreach(Ponto4D vertex in this.vertices)
                     GL.Vertex2(vertex.X, vertex.Y);
             GL.End();
 
-            boundBox.DesenharBBox();
-            
             GL.PopMatrix();
+
+            boundBox.DesenharBBox();
+        }
+
+        public bool IsColliding(GameObject other) {
+            return boundBox.IsColliding(other);
         }
     }
 }

@@ -29,7 +29,9 @@ namespace sticker_man
       0, 0, 0, 1
     };
 
-    public Transformacao4D(){ }
+    public Transformacao4D(){ 
+      AtribuirIdentidade();
+    }
 
     /// Atribui os valores de uma matriz Identidade a matriz de Transformacao.
     public void AtribuirIdentidade()

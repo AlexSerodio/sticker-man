@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 namespace sticker_man
@@ -6,6 +5,7 @@ namespace sticker_man
     public class World
     {
         private Camera camera;
+        public static List<GameObject> objects = new List<GameObject>();
 
         public World() 
         {
