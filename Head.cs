@@ -1,8 +1,6 @@
 using System.Collections.Generic;
-using System.Drawing;
-using OpenTK.Graphics.OpenGL;
 
-namespace sticker_man
+namespace stick_man
 {
     public class Head : GameObject
     {
@@ -14,7 +12,7 @@ namespace sticker_man
         {
             this.radius = radius;
             this.center = new Ponto4D(center.X, center.Y + radius);
-            SetVertices(250);
+            SetVertices(270);
         }
 
         public Ponto4D GetCenter() => center;

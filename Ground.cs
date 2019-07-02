@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
-namespace sticker_man
+namespace stick_man
 {
     public class Ground : GameObject
     {

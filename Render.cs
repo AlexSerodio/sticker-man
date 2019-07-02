@@ -5,7 +5,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace sticker_man
+namespace stick_man
 {
   public class Render : GameWindow
   {

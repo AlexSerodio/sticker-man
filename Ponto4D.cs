@@ -1,6 +1,4 @@
-using System;
-
-namespace sticker_man
+namespace stick_man
 {
   public class Ponto4D
   {
@@ -36,7 +34,7 @@ namespace sticker_man
     /// <summary>
     /// Inverte todos os valores das coordenadas do ponto
     /// </summary>
-    public void InverterSinal()
+    public void InvertSignals()
     {
       x *= -1;
       y *= -1;

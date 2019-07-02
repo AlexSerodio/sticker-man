@@ -4,7 +4,7 @@
 
 using System;
 
-namespace sticker_man
+namespace stick_man
 {
   /// <summary>
   /// Classe que define as Transformacoes Geometricas no espaco 3D

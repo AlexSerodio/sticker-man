@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace sticker_man
+namespace stick_man
 {
     public class Limb : GameObject
     {

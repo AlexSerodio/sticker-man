@@ -1,6 +1,6 @@
 using System;
 
-namespace sticker_man
+namespace stick_man
 {
   /// <summary>
   /// Classe com funções matemáticas.

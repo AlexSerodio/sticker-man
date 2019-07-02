@@ -1,4 +1,4 @@
-namespace sticker_man
+namespace stick_man
 {
     public enum Tag {
         UNTTAGED,
