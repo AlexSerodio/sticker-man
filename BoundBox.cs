@@ -80,21 +80,23 @@ namespace stick_man
             centro.Z = (maiorZ + menorZ) / 2;
         }
 
-        public bool IsColliding(GameObject other)
+        public bool IsColliding(GameObject collided, GameObject other)
         {
             foreach (Ponto4D vertice in other.GetVertices()) {
-                if(IsColliding(other.GetTransform().TransformPoint(vertice)))
+                if(IsColliding(other.GetTransform().TransformPoint(vertice), collided))
                     return true;
             }
             return false;
         }
 
-        public bool IsColliding(Ponto4D ponto)
+        public bool IsColliding(Ponto4D ponto, GameObject collided)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
+                            if(collided is GeometricObject)
+                                return ScanLine(ponto, collided.GetVertices()) != 0;
                             return true;
                         }
                     }

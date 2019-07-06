@@ -99,7 +99,7 @@ namespace stick_man
         }
 
         public bool IsColliding(GameObject other) {
-            return boundBox.IsColliding(other);
+            return boundBox.IsColliding(this, other);
         }
     }
 }
