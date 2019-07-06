@@ -13,16 +13,19 @@ namespace stick_man
         private BoundBox boundBox;
         private Transformacao4D transform;
         private List<Ponto4D> vertices;
+        private PrimitiveType primitive;
 
         public GameObject(Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
+            primitive = PrimitiveType.Lines;
             this.vertices = new List<Ponto4D>();
         }
 
         public GameObject(List<Ponto4D> vertices, Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
+            primitive = PrimitiveType.Lines;
             SetVertices(vertices);
         }
 
@@ -32,6 +35,22 @@ namespace stick_man
             this.vertices = new List<Ponto4D>();
             this.vertices.AddRange(vertices);
             boundBox.AtualizarBBox(this.vertices);
+        }
+
+        public void SetPrimitive(PrimitiveType primitive) => this.primitive = primitive;
+
+        public void AddVertice(Ponto4D newVertice)
+        {
+            List<Ponto4D> vertices = GetVertices();
+            vertices.Add(newVertice);
+            SetVertices(vertices);
+        }
+
+        public void UpdateVertice(Ponto4D vertice, int position)
+        {
+            List<Ponto4D> vertices = GetVertices();
+            vertices[position] = vertice;
+            SetVertices(vertices);
         }
 
         public void SetTag(Tag tag) {
@@ -69,7 +88,7 @@ namespace stick_man
             GL.MultMatrix(transform.GetData());
             GL.Color3(Color.Black);
             GL.LineWidth(3);
-            GL.Begin(PrimitiveType.Lines);
+            GL.Begin(primitive);
                 foreach(Ponto4D vertex in this.vertices)
                     GL.Vertex2(vertex.X, vertex.Y);
             GL.End();
