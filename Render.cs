@@ -10,28 +10,14 @@ namespace stick_man
   public class Render : GameWindow
   {
 
-    private Stickman stickman;
-    private Ground ground;
-    private Camera camera;
-
-    private double moveSpeed = 2.0;
-    private bool creationMode = false;
-    private bool creatingObject = false;
+    private World world;
+    private Stickman player;
 
     public Render(int width, int height) : base(width, height) { 
 
-      camera = new Camera(0, width, 0, height, -1, 1);
+      world = new World(width, height);
+      player = new Stickman(new Ponto4D(200, 1200), 0.2, world);
 
-      stickman = new Stickman(new Ponto4D(200, 1200));
-
-      ground = new Ground(new List<Ponto4D> { 
-        new Ponto4D(0, 0),
-        new Ponto4D(0, 50),
-        new Ponto4D(width, 0),
-        new Ponto4D(width, 50),
-      });
-
-      World.objects.Add(ground);
     }
 
     protected override void OnLoad(EventArgs e) { 
@@ -42,10 +28,10 @@ namespace stick_man
     {
       base.OnUpdateFrame(e);
 
-      if(!creationMode)
+      if(!world.IsCreationModeOn())
         HandlePlayerMovement();
 
-      camera.Update();
+      world.UpdateCamera();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -56,10 +42,8 @@ namespace stick_man
       GL.ClearColor(Color.Gray);
       GL.MatrixMode(MatrixMode.Modelview);
 
-      stickman.Draw();
-
-      foreach(GameObject obj in World.objects)
-        obj.Draw();
+      world.DrawObjects();
+      player.Draw();
 
       this.SwapBuffers();
     }
@@ -78,12 +62,12 @@ namespace stick_man
       if(e.Button == MouseButton.Left) {
 
       } else if(e.Button == MouseButton.Right) {
-        if(creationMode) {
-          if(!creatingObject) {
-            World.objects.Add(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
-            creatingObject = true;
+        if(world.IsCreationModeOn()) {
+          if(!world.IsCreatingObject()) {
+            world.AddObject(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
+            world.SetCreatingObject(true);
           } else {
-            World.objects[World.objects.Count-1].AddVertice(clickedPoint);
+            world.GetLastObject().AddVertice(clickedPoint);
           }
         }
       }
@@ -92,12 +76,12 @@ namespace stick_man
     protected override void OnMouseMove(MouseMoveEventArgs e) {
       base.OnMouseMove(e);
     
-      if(creationMode) {
-          if(creatingObject) {
+      if(world.IsCreationModeOn()) {
+          if(world.IsCreatingObject()) {
             Ponto4D point = new Ponto4D(e.X, Height - e.Y);
-            GameObject lastObject = World.objects[World.objects.Count-1];
+            GameObject lastObject = world.GetLastObject();
             int lastVerticePosition = lastObject.GetVertices().Count-1;
-            World.objects[World.objects.Count-1].UpdateVertice(point, lastVerticePosition);
+            lastObject.UpdateVertice(point, lastVerticePosition);
           }
       }
     }
@@ -106,50 +90,32 @@ namespace stick_man
     {
       KeyboardState keyState = Keyboard.GetState();
 
-      if(keyState.IsKeyDown(Key.A)) {
-        stickman.Translate(-moveSpeed, 0, 0);
+      if(keyState.IsKeyDown(Key.A))
+        player.MoveLeft();
 
-        if(stickman.Collided())
-          stickman.Translate(moveSpeed, 0, 0);
-      }
+      if(keyState.IsKeyDown(Key.D))
+        player.MoveRight();
 
-      if(keyState.IsKeyDown(Key.D)) {
-        stickman.Translate(moveSpeed, 0, 0);
+      if(keyState.IsKeyDown(Key.W))
+        player.MoveUp();
 
-        if(stickman.Collided())
-          stickman.Translate(-moveSpeed, 0, 0);
-      }
-
-      if(keyState.IsKeyDown(Key.W)) {
-        stickman.Translate(0, moveSpeed, 0);
-
-        if(stickman.Collided())
-          stickman.Translate(0, -moveSpeed, 0);
-      }
-
-      if(keyState.IsKeyDown(Key.S)) {
-        stickman.Translate(0, -moveSpeed, 0);
-
-        if(stickman.Collided())
-          stickman.Translate(0, moveSpeed, 0);
-      }
+      if(keyState.IsKeyDown(Key.S))
+        player.MoveDown();
     }
 
     private void HandlePressedKeys(KeyboardKeyEventArgs e) {
       switch(e.Key) {
         case Key.Z:
-          creationMode = !creationMode;
-          
-          Console.WriteLine("CreationMode: {0}", creationMode);
+          world.SwitchCreationMode();
 
-          if(creatingObject) {
-            World.objects[World.objects.Count-1].SetPrimitive(PrimitiveType.LineLoop);
-            creatingObject = false;
+          if(world.IsCreationModeOn()) {
+            world.GetLastObject().SetPrimitive(PrimitiveType.LineLoop);
+            world.SetCreatingObject(false);
           }
           break;
         case Key.C:
-          World.objects[World.objects.Count-1].SetPrimitive(PrimitiveType.LineLoop);
-          creatingObject = false;
+          world.GetLastObject().SetPrimitive(PrimitiveType.LineLoop);
+          world.SetCreatingObject(false);
           break;
       }
     }

@@ -8,15 +8,32 @@ namespace stick_man
         private Ponto4D root;
         public List<GameObject> limbs;
         private double sizeFactor = 0.2;
+        private double speed = 2.0;
+        private World world;
 
-        public Stickman(Ponto4D root = null)
+        public Stickman()
         {
-            this.root = (root != null) ? root : new Ponto4D();
+            this.root = new Ponto4D();
+            this.sizeFactor = 0.2;
             limbs = new List<GameObject>();
 
             base.SetTag(Tag.MAN);
             CreateBody(root);
         }
+
+        public Stickman(Ponto4D root, double sizeFactor, World world)
+        {
+            this.root = root;
+            this.sizeFactor = sizeFactor;
+            this.world = world;
+            limbs = new List<GameObject>();
+
+            base.SetTag(Tag.MAN);
+            CreateBody(root);
+        }
+
+        public void SetSpeed(double speed) => this.speed = speed;
+        public double GetSpeed() => this.speed;
 
         public Ponto4D GetRoot() => root;
 
@@ -46,12 +63,40 @@ namespace stick_man
 
         public bool Collided()
         {
-            foreach(GameObject obj in World.objects) {
+            foreach(GameObject obj in world.GetObjects()) {
                 if(obj.IsColliding(this))
                     return true;
             }
 
             return false;
+        }
+
+        public void MoveLeft() {
+            base.Translate(-speed, 0, 0);
+
+            if(this.Collided())
+                base.Translate(speed, 0, 0);
+        }
+
+        public void MoveRight() {
+            base.Translate(speed, 0, 0);
+
+            if(this.Collided())
+                base.Translate(-speed, 0, 0);
+        }
+
+        public void MoveUp() {
+            base.Translate(0, speed, 0);
+
+            if(this.Collided())
+                base.Translate(0, -speed, 0);
+        }
+
+        public void MoveDown() {
+            base.Translate(0, -speed, 0);
+
+            if(this.Collided())
+                base.Translate(0, speed, 0);
         }
 
     }
