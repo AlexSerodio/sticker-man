@@ -15,9 +15,8 @@ namespace stick_man
     private Camera camera;
 
     private double moveSpeed = 2.0;
-    private double jumpSpeed = 2.0;
-    private double jumpLimit = 50.0;
-    private bool jumping = false;
+    private bool creationMode = false;
+    private bool creatingObject = false;
 
     public Render(int width, int height) : base(width, height) { 
 
@@ -43,13 +42,10 @@ namespace stick_man
     {
       base.OnUpdateFrame(e);
 
-      HandlePressedKeys();
+      if(!creationMode)
+        HandlePlayerMovement();
 
       camera.Update();
-    }
-
-    protected override void OnKeyDown(KeyboardKeyEventArgs e) { 
-      base.OnKeyDown(e); 
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -68,7 +64,45 @@ namespace stick_man
       this.SwapBuffers();
     }
 
-    private void HandlePressedKeys() 
+    protected override void OnKeyDown(KeyboardKeyEventArgs e) { 
+      base.OnKeyDown(e);
+
+      HandlePressedKeys(e);
+    }
+
+    protected override void OnMouseDown(MouseButtonEventArgs e) {
+      base.OnMouseDown(e);
+
+      Ponto4D clickedPoint = new Ponto4D(e.X, Height - e.Y);
+
+      if(e.Button == MouseButton.Left) {
+
+      } else if(e.Button == MouseButton.Right) {
+        if(creationMode) {
+          if(!creatingObject) {
+            World.objects.Add(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
+            creatingObject = true;
+          } else {
+            World.objects[World.objects.Count-1].AddVertice(clickedPoint);
+          }
+        }
+      }
+    }
+
+    protected override void OnMouseMove(MouseMoveEventArgs e) {
+      base.OnMouseMove(e);
+    
+      if(creationMode) {
+          if(creatingObject) {
+            Ponto4D point = new Ponto4D(e.X, Height - e.Y);
+            GameObject lastObject = World.objects[World.objects.Count-1];
+            int lastVerticePosition = lastObject.GetVertices().Count-1;
+            World.objects[World.objects.Count-1].UpdateVertice(point, lastVerticePosition);
+          }
+      }
+    }
+
+    private void HandlePlayerMovement() 
     {
       KeyboardState keyState = Keyboard.GetState();
 
@@ -87,17 +121,36 @@ namespace stick_man
       }
 
       if(keyState.IsKeyDown(Key.W)) {
-        stickman.Translate(0, jumpSpeed, 0);
+        stickman.Translate(0, moveSpeed, 0);
 
         if(stickman.Collided())
-          stickman.Translate(0, -jumpSpeed, 0);
+          stickman.Translate(0, -moveSpeed, 0);
       }
 
       if(keyState.IsKeyDown(Key.S)) {
-        stickman.Translate(0, -jumpSpeed, 0);
+        stickman.Translate(0, -moveSpeed, 0);
 
         if(stickman.Collided())
-          stickman.Translate(0, jumpSpeed, 0);
+          stickman.Translate(0, moveSpeed, 0);
+      }
+    }
+
+    private void HandlePressedKeys(KeyboardKeyEventArgs e) {
+      switch(e.Key) {
+        case Key.Z:
+          creationMode = !creationMode;
+          
+          Console.WriteLine("CreationMode: {0}", creationMode);
+
+          if(creatingObject) {
+            World.objects[World.objects.Count-1].SetPrimitive(PrimitiveType.LineLoop);
+            creatingObject = false;
+          }
+          break;
+        case Key.C:
+          World.objects[World.objects.Count-1].SetPrimitive(PrimitiveType.LineLoop);
+          creatingObject = false;
+          break;
       }
     }
   }
