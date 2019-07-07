@@ -15,7 +15,7 @@ namespace stick_man
         public override void Draw()
         {
             GL.Color3(Color.Black);
-            GL.Begin(PrimitiveType.QuadStrip);
+            GL.Begin(PrimitiveType.Polygon);
                 foreach(Ponto4D vertex in base.GetVertices())
                     GL.Vertex2(vertex.X, vertex.Y);
             GL.End();

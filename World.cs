@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using OpenTK.Graphics.OpenGL;
 
 namespace stick_man
 {
@@ -15,7 +16,7 @@ namespace stick_man
         {
             camera = new Camera(0, width, 0, height, -1, 1);
 
-            CraeteGround(width, 50);
+            CraeteGround(width/2, height/2);
         }
 
         public void UpdateCamera() => camera.Update();
@@ -36,10 +37,10 @@ namespace stick_man
         private void CraeteGround(int width, int height)
         {
             Ground ground = new Ground(new List<Ponto4D> { 
-                new Ponto4D(0, 0),
-                new Ponto4D(0, height),
-                new Ponto4D(width, 0),
-                new Ponto4D(width, height),
+                new Ponto4D(width, -height+50),
+                new Ponto4D(-width, -height+50),
+                new Ponto4D(-width, -height),
+                new Ponto4D(width, -height),
             });
             objects.Add(ground);
         }
@@ -48,5 +49,11 @@ namespace stick_man
         public GameObject GetObject(int index) => objects[index];
         public GameObject GetLastObject() => objects[objects.Count-1];
         public List<GameObject> GetObjects() => objects;
+
+        public void SetPrimitive(PrimitiveType primitive) 
+        {
+            foreach(GameObject obj in objects)
+                obj.SetPrimitive(primitive);
+        }
     }
 }
