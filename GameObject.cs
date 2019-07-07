@@ -46,6 +46,12 @@ namespace stick_man
             SetVertices(vertices);
         }
 
+        public void FinishObject()
+        {
+            AddVertice(vertices[0]);  
+            SetPrimitive(PrimitiveType.Polygon);
+        }
+
         public void UpdateVertice(Ponto4D vertice, int position)
         {
             List<Ponto4D> vertices = GetVertices();

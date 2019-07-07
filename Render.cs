@@ -13,19 +13,19 @@ namespace stick_man
     private World world;
     private Stickman player;
 
-    // Eye: (87, 246, 257)
-    // Target: (78, 255, -74)
-    Vector3 eye = new Vector3(0, 0, 500);
-    Vector3 target = Vector3.Zero;
+    Vector3 eye;
+    Vector3 target;
     Vector3 up = Vector3.UnitY;
+    private int mouseXOffset = 300;
+    private int mouseYOffset = 350;
 
-    public Render(int width, int height) : base(width, height)
+    public Render(int width, int height, int distance) : base(width, height)
     { 
+      eye = new Vector3(0, 0, distance);
+      target = Vector3.Zero;
 
       world = new World(width, height);
-      // player = new Stickman(new Ponto4D(200, 1200), 0.2, world);
-      player = new Stickman(new Ponto4D(0, 0), 0.2, world);
-
+      player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
     }
 
     protected override void OnLoad(EventArgs e)
@@ -35,7 +35,6 @@ namespace stick_man
       GL.ClearColor(Color.Gray);
       GL.Enable(EnableCap.DepthTest);
       GL.Enable(EnableCap.CullFace);
-
     }
 
     protected override void OnResize(EventArgs e) 
@@ -44,7 +43,7 @@ namespace stick_man
 
       GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-      Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1.0f, 600.0f);
+      Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1.0f, 800.0f);
       GL.MatrixMode(MatrixMode.Projection);
       GL.LoadMatrix(ref projection);
     }
@@ -55,8 +54,6 @@ namespace stick_man
 
       if(!world.IsCreationModeOn())
         HandlePlayerMovement();
-
-      // world.UpdateCamera();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -83,7 +80,7 @@ namespace stick_man
     protected override void OnMouseDown(MouseButtonEventArgs e) {
       base.OnMouseDown(e);
 
-      Ponto4D clickedPoint = new Ponto4D(e.X, Height - e.Y);
+      Ponto4D clickedPoint = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
 
       if(e.Button == MouseButton.Left) {
 
@@ -104,7 +101,7 @@ namespace stick_man
     
       if(world.IsCreationModeOn()) {
           if(world.IsCreatingObject()) {
-            Ponto4D point = new Ponto4D(e.X, Height - e.Y);
+            Ponto4D point = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
             GameObject lastObject = world.GetLastObject();
             int lastVerticePosition = lastObject.GetVertices().Count-1;
             lastObject.UpdateVertice(point, lastVerticePosition);
@@ -133,61 +130,23 @@ namespace stick_man
       switch(e.Key) {
         case Key.Z:
           world.SwitchCreationMode();
+          world.GetLastObject().FinishObject();
 
-          if(world.IsCreationModeOn()) {
-            world.GetLastObject().SetPrimitive(PrimitiveType.LineLoop);
+          if(world.IsCreationModeOn())
             world.SetCreatingObject(false);
-          }
           break;
         case Key.C:
-          world.GetLastObject().SetPrimitive(PrimitiveType.LineLoop);
+          world.GetLastObject().FinishObject();
           world.SetCreatingObject(false);
           break;
-        case Key.Right:
-          eye.X += 1;
-          break;
-        case Key.Left:
-          eye.X -= 1;
-          break;
-        case Key.Up:
-          eye.Y += 1;
-          break;
-        case Key.Down:
-          eye.Y -= 1;
-          break;
-        case Key.Home:
-          eye.Z += 1;
-          break;
-        case Key.End:
-          eye.Z -= 1;
-          break;
-        
-        case Key.L:
-          target.X += 1;
-          break;
-        case Key.J:
-          target.X -= 1;
-          break;
-        case Key.I:
-          target.Y += 1;
-          break;
-        case Key.K:
-          target.Y -= 1;
-          break;
-        case Key.N:
-          target.Z += 1;
-          break;
-        case Key.M:
-          target.Z -= 1;
-          break;        
-
         case Key.Escape:
           this.Exit();
           break;
-
+        case Key.O:
+          world.SetPrimitive(PrimitiveType.Polygon);
+        break;
         case Key.P:
-          Console.WriteLine("Eye: ({0}, {1}, {2})", eye.X, eye.Y, eye.Z);
-          Console.WriteLine("Target: ({0}, {1}, {2})", target.X, target.Y, target.Z);
+          world.SetPrimitive(PrimitiveType.LineStrip);
         break;
       }
     }
