@@ -90,7 +90,7 @@ namespace stick_man
             GL.LineWidth(3);
             GL.Begin(primitive);
                 foreach(Ponto4D vertex in this.vertices)
-                    GL.Vertex2(vertex.X, vertex.Y);
+                    GL.Vertex3(vertex.X, vertex.Y, vertex.Z);
             GL.End();
 
             GL.PopMatrix();
