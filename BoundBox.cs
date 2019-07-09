@@ -57,6 +57,7 @@ namespace stick_man
 
         public void AtualizarBBox(List<Ponto4D> pontos, Transformacao4D transform = null) {
             AtribuirBBox(pontos[0]);
+            ProcessarCentroBBox();
 
             foreach(Ponto4D ponto in pontos)
                 AtualizarBBox(ponto.X, ponto.Y, ponto.Z);
@@ -89,7 +90,7 @@ namespace stick_man
             return false;
         }
 
-        public bool IsColliding(Ponto4D ponto, GameObject collided)
+        public bool IsColliding(Ponto4D ponto, GameObject collided = null)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
