@@ -100,34 +100,35 @@ namespace stick_man
             globalTransform = translationTransformInverse.TransformMatrix(globalTransform);
 
             transform = transform.TransformMatrix(globalTransform);
+
+            boundBox.AtualizarBBox(this.vertices, transform);
         }
 
-        public virtual void Rotate(double factor)
+        public void Rotate(double degreeFactor)
         {
             Ponto4D center = boundBox.ObterCentro;
-
-            Transformacao4D globalTransform = new Transformacao4D();
             Transformacao4D translationTransform = new Transformacao4D();
-            Transformacao4D translationTransformInverse = new Transformacao4D();
             Transformacao4D rotationTransform = new Transformacao4D();
+            Transformacao4D translationTransformInverse = new Transformacao4D();
 
-            translationTransform.AtribuirTranslacao(center.X, center.Y, center.Z);
-            globalTransform = translationTransform.TransformMatrix(globalTransform);
+            translationTransform.AtribuirTranslacao(center.X, center.Y, 0);
 
-            rotationTransform.AtribuirRotacaoZ(Transformacao4D.DEG_TO_RAD * factor);
-            globalTransform = rotationTransform.TransformMatrix(globalTransform);
+            rotationTransform.AtribuirRotacaoZ(Transformacao4D.DEG_TO_RAD * degreeFactor);
 
             center.InvertSignals();
-            translationTransformInverse.AtribuirTranslacao(center.X, center.Y, center.Z);
-            globalTransform = translationTransformInverse.TransformMatrix(globalTransform);
+            translationTransformInverse.AtribuirTranslacao(center.X, center.Y, 0);
 
-            transform = transform.TransformMatrix(globalTransform);
+            Transformacao4D finalTransform = translationTransform.TransformMatrix(rotationTransform);
+            finalTransform = finalTransform.TransformMatrix(translationTransformInverse);
+            transform = finalTransform.TransformMatrix(transform);
+
+            boundBox.AtualizarBBox(this.vertices, transform);
         }
 
         public virtual void Draw()
         {
             GL.PushMatrix();
-            GL.MultMatrix(transform.GetData());
+            GL.MultMatrix(transform.GetData()); 
             GL.Color3(GetColor());
             GL.LineWidth(3);
             GL.Begin(primitive);
