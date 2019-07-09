@@ -13,16 +13,17 @@ namespace stick_man
     private World world;
     private Stickman player;
 
-    Vector3 eye;
-    Vector3 target;
-    Vector3 up = Vector3.UnitY;
+    private Vector3 eye;
+    private Vector3 target;
+    private Vector3 up = Vector3.UnitY;
     private int mouseXOffset = 300;
     private int mouseYOffset = 350;
+    private double objectSpeed = 5.0;
 
     public Render(int width, int height, int distance) : base(width, height)
     { 
       eye = new Vector3(0, 0, distance);
-      target = Vector3.Zero;
+      target = new Vector3(0, 0, 0);
 
       world = new World(width, height);
       player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
@@ -43,7 +44,7 @@ namespace stick_man
 
       GL.Viewport(ClientRectangle.X, ClientRectangle.Y, ClientRectangle.Width, ClientRectangle.Height);
 
-      Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1.0f, 800.0f);
+      Matrix4 projection = Matrix4.CreatePerspectiveFieldOfView((float)Math.PI / 4, Width / (float)Height, 1.0f, 1000.0f);
       GL.MatrixMode(MatrixMode.Projection);
       GL.LoadMatrix(ref projection);
     }
@@ -54,6 +55,9 @@ namespace stick_man
 
       if(!world.IsCreationModeOn())
         HandlePlayerMovement();
+
+      if(world.HasSelectedObject())
+        HandleObjectMovement();
     }
 
     protected override void OnRenderFrame(FrameEventArgs e)
@@ -83,6 +87,10 @@ namespace stick_man
       Ponto4D clickedPoint = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
 
       if(e.Button == MouseButton.Left) {
+        if(world.IsInstantiationModeOn())
+          world.CreateRectangle(clickedPoint);
+        else
+          world.SetSelectedObject(world.SelectObject(clickedPoint));
 
       } else if(e.Button == MouseButton.Right) {
         if(world.IsCreationModeOn()) {
@@ -98,7 +106,7 @@ namespace stick_man
 
     protected override void OnMouseMove(MouseMoveEventArgs e) {
       base.OnMouseMove(e);
-    
+
       if(world.IsCreationModeOn()) {
           if(world.IsCreatingObject()) {
             Ponto4D point = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
@@ -126,14 +134,34 @@ namespace stick_man
         player.MoveDown();
     }
 
+    private void HandleObjectMovement()
+    {  
+      KeyboardState keyState = Keyboard.GetState();
+
+      if(keyState.IsKeyDown(Key.Up)) 
+        world.GetSelectedObject().Translate(0, objectSpeed, 0);
+      
+      if(keyState.IsKeyDown(Key.Down))
+        world.GetSelectedObject().Translate(0, -objectSpeed, 0);
+
+      if(keyState.IsKeyDown(Key.Right))
+        world.GetSelectedObject().Translate(objectSpeed, 0, 0);
+
+      if(keyState.IsKeyDown(Key.Left))
+        world.GetSelectedObject().Translate(-objectSpeed, 0, 0);
+    }
+
     private void HandlePressedKeys(KeyboardKeyEventArgs e) {
+      // int temp = 50;
       switch(e.Key) {
         case Key.Z:
-          world.SwitchCreationMode();
-          world.GetLastObject().FinishObject();
+          world.SwitchInstantiationMode();
 
-          if(world.IsCreationModeOn())
-            world.SetCreatingObject(false);
+          // deprecated
+          // world.SwitchCreationMode();
+          // world.GetLastObject().FinishObject();
+          // if(world.IsCreationModeOn())
+          //   world.SetCreatingObject(false);
           break;
         case Key.C:
           world.GetLastObject().FinishObject();
@@ -142,12 +170,64 @@ namespace stick_man
         case Key.Escape:
           this.Exit();
           break;
-        case Key.O:
-          world.SetPrimitive(PrimitiveType.Polygon);
-        break;
-        case Key.P:
-          world.SetPrimitive(PrimitiveType.LineStrip);
-        break;
+        // case Key.O:
+        //   world.SetPrimitive(PrimitiveType.Polygon);
+        // break;
+        // case Key.P:
+        //   world.SetPrimitive(PrimitiveType.LineStrip);
+        // break;
+        // case Key.Right:
+        //   eye.X += temp;
+        //   break;
+        // case Key.Left:
+        //   eye.X -= temp;
+        //   break;
+        // case Key.Up:
+        //   eye.Y += temp;
+        //   break;
+        // case Key.Down:
+        //   eye.Y -= temp;
+        //   break;
+        // case Key.Home:
+        //   eye.Z += temp;
+        //   break;
+        // case Key.End:
+        //   eye.Z -= temp;
+        //   break;
+        // case Key.L:
+        //   target.X += temp;
+        //   break;
+        // case Key.J:
+        //   target.X -= temp;
+        //   break;
+        // case Key.I:
+        //   target.Y += temp;
+        //   break;
+        // case Key.K:
+        //   target.Y -= temp;
+        //   break;
+        // case Key.N:
+        //   target.Z += temp;
+        //   break;
+        // case Key.M:
+        //   target.Z -= temp;
+        //   break;
+        case Key.R:
+          if(world.HasSelectedObject())
+            world.GetSelectedObject().Scale(1.1);
+          break;
+        case Key.T:
+          if(world.HasSelectedObject())
+            world.GetSelectedObject().Scale(0.9);
+          break;
+        case Key.F:
+          if(world.HasSelectedObject())
+            world.GetSelectedObject().Rotate(1.1);
+          break;
+        case Key.G:
+          if(world.HasSelectedObject())
+            world.GetSelectedObject().Rotate(-1.1);
+          break;
       }
     }
   }

@@ -89,7 +89,7 @@ namespace stick_man
             return false;
         }
 
-        public bool IsColliding(Ponto4D ponto, GameObject collided)
+        public bool IsColliding(Ponto4D ponto, GameObject collided = null)
         {
             if(ponto.X < maiorX) {
                 if(ponto.X > menorX) {
