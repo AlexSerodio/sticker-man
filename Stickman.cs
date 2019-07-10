@@ -13,6 +13,12 @@ namespace stick_man
         private double speed = 2.0;
         private World world;
         private Animator animator;
+        private Thread walkThread;
+
+        private bool walking;
+
+        public void SetWalking(bool value) => walking = value;
+        public bool GetWalking() => walking;
 
         public Stickman()
         {
@@ -23,6 +29,7 @@ namespace stick_man
 
             base.SetTag(Tag.MAN);
             CreateBody(root);
+            PrepareThread();
         }
 
         public Stickman(Ponto4D root, double sizeFactor, World world)
@@ -35,6 +42,21 @@ namespace stick_man
 
             base.SetTag(Tag.MAN);
             CreateBody(root);
+            PrepareThread();
+        }
+
+        private void PrepareThread() {
+            walkThread = new Thread(Animation);
+            walkThread.IsBackground = true;
+            walkThread.Priority = ThreadPriority.BelowNormal;
+            walkThread.Start();
+        }
+
+        private void Animation() {
+            while(true) {
+                if(walking)
+                    Walk();
+            }
         }
 
         public void SetSpeed(double speed) => this.speed = speed;
@@ -111,6 +133,7 @@ namespace stick_man
         }
 
         public void MoveLeft() {
+            SetWalking(true);
             base.Translate(-speed, 0, 0);
 
             if(this.Collided())
@@ -118,6 +141,7 @@ namespace stick_man
         }
 
         public void MoveRight() {
+            SetWalking(true);
             base.Translate(speed, 0, 0);
 
             if(this.Collided())
@@ -125,6 +149,7 @@ namespace stick_man
         }
 
         public void MoveUp() {
+            SetWalking(true);
             base.Translate(0, speed, 0);
 
             if(this.Collided())
@@ -132,6 +157,7 @@ namespace stick_man
         }
 
         public void MoveDown() {
+            SetWalking(true);
             base.Translate(0, -speed, 0);
 
             if(this.Collided())

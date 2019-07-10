@@ -29,21 +29,6 @@ namespace stick_man
       world = new World(width, height);
       // player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
       player = new Stickman(new Ponto4D(0, 0), 0.2, world);
-
-      PrepareThread();
-    }
-
-    private void PrepareThread() {
-      Thread thread = new Thread(Animation);
-      thread.IsBackground = true;
-      thread.Priority = ThreadPriority.BelowNormal;
-      thread.Start();
-    }
-
-    private void Animation() {
-      while(true) {
-        player.Walk();
-      }
     }
 
     protected override void OnLoad(EventArgs e)
@@ -96,6 +81,13 @@ namespace stick_man
       base.OnKeyDown(e);
 
       HandlePressedKeys(e);
+    }
+
+    protected override void OnKeyUp(KeyboardKeyEventArgs e) { 
+      base.OnKeyUp(e);
+
+      if(e.Key == Key.W || e.Key == Key.S || e.Key == Key.A || e.Key == Key.D)
+        player.SetWalking(false);
     }
 
     protected override void OnMouseDown(MouseButtonEventArgs e) {
