@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using System.Threading;
 
 namespace stick_man
 {
@@ -26,7 +27,23 @@ namespace stick_man
       target = new Vector3(0, 0, 0);
 
       world = new World(width, height);
-      player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
+      // player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
+      player = new Stickman(new Ponto4D(0, 0), 0.2, world);
+
+      PrepareThread();
+    }
+
+    private void PrepareThread() {
+      Thread thread = new Thread(Animation);
+      thread.IsBackground = true;
+      thread.Priority = ThreadPriority.BelowNormal;
+      thread.Start();
+    }
+
+    private void Animation() {
+      while(true) {
+        player.Walk();
+      }
     }
 
     protected override void OnLoad(EventArgs e)

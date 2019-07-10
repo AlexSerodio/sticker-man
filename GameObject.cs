@@ -42,6 +42,7 @@ namespace stick_man
         }
 
         public void SetPrimitive(PrimitiveType primitive) => this.primitive = primitive;
+        public PrimitiveType GetPrimitive() => primitive;
 
         public void AddVertice(Ponto4D newVertice)
         {
