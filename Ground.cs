@@ -4,22 +4,15 @@ using OpenTK.Graphics.OpenGL;
 
 namespace stick_man
 {
-    public class Ground : GameObject
+    public class Ground : Rectangle
     {
 
-        public Ground(List<Ponto4D> vertices) : base(vertices) {
+        public Ground(List<Ponto4D> vertices) : base(vertices, 200) {
             base.SetTag(Tag.GROUND);
             base.SetVertices(vertices);
-        }
+            base.SetColor(Color.Brown);
 
-        public override void Draw()
-        {
-            GL.Color3(Color.Black);
-            GL.Begin(PrimitiveType.Polygon);
-                foreach(Ponto4D vertex in base.GetVertices())
-                    GL.Vertex2(vertex.X, vertex.Y);
-            GL.End();
-            base.GetBoundBox().DesenharBBox();
+            base.SetHasGravity(false);
         }
 
     }

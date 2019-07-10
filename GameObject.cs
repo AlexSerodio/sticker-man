@@ -15,12 +15,15 @@ namespace stick_man
         private Transformacao4D transform;
         private List<Ponto4D> vertices;
         private PrimitiveType primitive;
+        private bool hasGravity;
 
         public GameObject(Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
             primitive = PrimitiveType.Lines;
             this.vertices = new List<Ponto4D>();
+
+            SetHasGravity(true);
         }
 
         public GameObject(List<Ponto4D> vertices, Tag tag = Tag.UNTTAGED) {
@@ -28,6 +31,8 @@ namespace stick_man
             boundBox = new BoundBox();
             primitive = PrimitiveType.Lines;
             SetVertices(vertices);
+
+            SetHasGravity(true);
         }
 
         public void SetColor(Color color) => this.color = color;
@@ -146,7 +151,7 @@ namespace stick_man
             return boundBox.IsColliding(this, other);
         }
 
-        public virtual bool Collided()
+        public bool Collided()
         {
             foreach(GameObject obj in Global.objects) {
                 if(obj.IsColliding(this))
@@ -154,6 +159,15 @@ namespace stick_man
             }
 
             return false;
+        }
+
+        public void SetHasGravity(bool value) => hasGravity = value;
+        public bool HasGravity() => hasGravity;
+
+        public void Gravity() {
+            this.Translate(0, Physics.GRAVITY_FORCE, 0);
+            if(this.Collided())
+                this.Translate(0, -Physics.GRAVITY_FORCE, 0);
         }
     }
 }

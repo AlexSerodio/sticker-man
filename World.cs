@@ -52,11 +52,12 @@ namespace stick_man
             return null;
         }
 
-        public void DrawObjects()
+        public void HandleObjects()
         {
             foreach(GameObject obj in Global.objects) {
                 obj.Draw();
-                // Physics.Gravity(obj);
+                if(obj.HasGravity())
+                    obj.Gravity();
             }
         }
 
@@ -74,10 +75,10 @@ namespace stick_man
         private void CraeteGround(int width, int height)
         {
             Ground ground = new Ground(new List<Ponto4D> { 
-                new Ponto4D(width, -height+50),
-                new Ponto4D(-width, -height+50),
-                new Ponto4D(-width, -height),
-                new Ponto4D(width, -height)
+                new Ponto4D(width+100, -height+50),
+                new Ponto4D(-width-100, -height+50),
+                new Ponto4D(-width-100, -height),
+                new Ponto4D(width+100, -height)
             });
             Global.objects.Add(ground);
         }

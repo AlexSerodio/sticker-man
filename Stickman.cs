@@ -20,7 +20,7 @@ namespace stick_man
         public void SetWalking(bool value) => walking = value;
         public bool GetWalking() => walking;
 
-        public Stickman()
+        public Stickman() : base()
         {
             this.root = new Ponto4D();
             this.sizeFactor = 0.2;
@@ -32,7 +32,7 @@ namespace stick_man
             PrepareThread();
         }
 
-        public Stickman(Ponto4D root, double sizeFactor, World world)
+        public Stickman(Ponto4D root, double sizeFactor, World world) : base()
         {
             this.root = root;
             this.sizeFactor = sizeFactor;
@@ -120,16 +120,6 @@ namespace stick_man
                 vertices.AddRange(limb.GetVertices());
 
             base.SetVertices(vertices);
-        }
-
-        public override bool Collided()
-        {
-            foreach(GameObject obj in Global.objects) {
-                if(obj.IsColliding(this))
-                    return true;
-            }
-
-            return false;
         }
 
         public void MoveLeft() {

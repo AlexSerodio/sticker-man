@@ -71,8 +71,9 @@ namespace stick_man
       GL.MatrixMode(MatrixMode.Modelview);
       GL.LoadMatrix(ref modelview);
 
-      world.DrawObjects();
+      world.HandleObjects();
       player.Draw();
+      player.Gravity();
 
       this.SwapBuffers();
     }
