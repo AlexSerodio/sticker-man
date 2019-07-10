@@ -147,17 +147,29 @@ namespace stick_man
     {  
       KeyboardState keyState = Keyboard.GetState();
 
-      if(keyState.IsKeyDown(Key.Up)) 
+      if(keyState.IsKeyDown(Key.Up)) {
         world.GetSelectedObject().Translate(0, objectSpeed, 0);
+        if(world.GetSelectedObject().Collided())
+          world.GetSelectedObject().Translate(0, -objectSpeed, 0);
+      }
       
-      if(keyState.IsKeyDown(Key.Down))
+      if(keyState.IsKeyDown(Key.Down)) {
         world.GetSelectedObject().Translate(0, -objectSpeed, 0);
+        if(world.GetSelectedObject().Collided())
+          world.GetSelectedObject().Translate(0, objectSpeed, 0);
+      }
 
-      if(keyState.IsKeyDown(Key.Right))
+      if(keyState.IsKeyDown(Key.Right)) {
         world.GetSelectedObject().Translate(objectSpeed, 0, 0);
+        if(world.GetSelectedObject().Collided())
+          world.GetSelectedObject().Translate(-objectSpeed, 0, 0);
+      }
 
-      if(keyState.IsKeyDown(Key.Left))
+      if(keyState.IsKeyDown(Key.Left)) {
         world.GetSelectedObject().Translate(-objectSpeed, 0, 0);
+        if(world.GetSelectedObject().Collided())
+          world.GetSelectedObject().Translate(objectSpeed, 0, 0);
+      }
     }
 
     private void HandlePressedKeys(KeyboardKeyEventArgs e) {

@@ -13,7 +13,7 @@ namespace stick_man
         private bool instantiationMode = false;
         private bool creationMode = false;
         private bool creatingObject = false;
-        private List<GameObject> objects = new List<GameObject>();
+        
         private GameObject selectedObject;
         private bool scaling = false;
 
@@ -44,7 +44,7 @@ namespace stick_man
 
         public GameObject SelectObject(Ponto4D pontoClicado)
         {
-            foreach(GameObject obj in objects) {
+            foreach(GameObject obj in Global.objects) {
                 if(obj.GetBoundBox().IsColliding(pontoClicado, obj))
                     return obj;
             }
@@ -54,8 +54,10 @@ namespace stick_man
 
         public void DrawObjects()
         {
-            foreach(GameObject obj in objects)
+            foreach(GameObject obj in Global.objects) {
                 obj.Draw();
+                // Physics.Gravity(obj);
+            }
         }
 
         public bool IsInstantiationModeOn() => instantiationMode;
@@ -75,19 +77,19 @@ namespace stick_man
                 new Ponto4D(width, -height+50),
                 new Ponto4D(-width, -height+50),
                 new Ponto4D(-width, -height),
-                new Ponto4D(width, -height),
+                new Ponto4D(width, -height)
             });
-            objects.Add(ground);
+            Global.objects.Add(ground);
         }
 
-        public void AddObject(GameObject newObject) => objects.Add(newObject);
-        public GameObject GetObject(int index) => objects[index];
-        public GameObject GetLastObject() => objects[objects.Count-1];
-        public List<GameObject> GetObjects() => objects;
+        public void AddObject(GameObject newObject) => Global.objects.Add(newObject);
+        public GameObject GetObject(int index) => Global.objects[index];
+        public GameObject GetLastObject() => Global.objects[Global.objects.Count-1];
+        public List<GameObject> GetObjects() => Global.objects;
 
         public void SetPrimitive(PrimitiveType primitive) 
         {
-            foreach(GameObject obj in objects)
+            foreach(GameObject obj in Global.objects)
                 obj.SetPrimitive(primitive);
         }
 
@@ -100,7 +102,7 @@ namespace stick_man
                 new Ponto4D(center.X+50, center.Y-10, 50)
             });
 
-            objects.Add(rectangle);
+            Global.objects.Add(rectangle);
             SetSelectedObject(GetLastObject());
         }
 

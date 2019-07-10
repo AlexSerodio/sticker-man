@@ -122,9 +122,9 @@ namespace stick_man
             base.SetVertices(vertices);
         }
 
-        public bool Collided()
+        public override bool Collided()
         {
-            foreach(GameObject obj in world.GetObjects()) {
+            foreach(GameObject obj in Global.objects) {
                 if(obj.IsColliding(this))
                     return true;
             }

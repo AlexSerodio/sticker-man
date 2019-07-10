@@ -64,6 +64,8 @@ namespace stick_man
             GL.End();
 
             GL.PopMatrix();
+
+            GetBoundBox().DesenharBBox();
         }
 
     }

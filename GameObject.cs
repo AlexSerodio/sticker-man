@@ -145,5 +145,15 @@ namespace stick_man
         public bool IsColliding(GameObject other) {
             return boundBox.IsColliding(this, other);
         }
+
+        public virtual bool Collided()
+        {
+            foreach(GameObject obj in Global.objects) {
+                if(obj.IsColliding(this))
+                    return true;
+            }
+
+            return false;
+        }
     }
 }

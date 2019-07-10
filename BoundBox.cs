@@ -73,6 +73,8 @@ namespace stick_man
             menorX = transform.TransformPoint(new Ponto4D(menorX, 0, 0)).X;
             menorY = transform.TransformPoint(new Ponto4D(0, menorY, 0)).Y;
             maiorY = transform.TransformPoint(new Ponto4D(0, maiorY, 0)).Y;
+            menorZ = transform.TransformPoint(new Ponto4D(0, 0, menorZ)).Z;
+            maiorZ = transform.TransformPoint(new Ponto4D(0, 0, maiorZ)).Z;
         }
 
         public void ProcessarCentroBBox() {
@@ -96,9 +98,13 @@ namespace stick_man
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
-                            if(collided is GeometricObject)
-                                return ScanLine(ponto, collided.GetVertices()) != 0;
-                            return true;
+                            // if(ponto.Z < maiorZ) {
+                                // if(ponto.Z > menorZ) {
+                                    // if(collided is GeometricObject)
+                                    //     return ScanLine(ponto, collided.GetVertices()) != 0;
+                                    return true;
+                                // }
+                            // }
                         }
                     }
                 }
