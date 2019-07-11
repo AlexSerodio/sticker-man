@@ -36,6 +36,7 @@ namespace stick_man
             camera = new Camera(0, width, 0, height, -1, 1);
 
             CraeteGround(width/2, height/2);
+            CraeteGround(width/2, -height/2);
         }
 
         public void UpdateCamera() => camera.Update();
@@ -92,6 +93,17 @@ namespace stick_man
                 new Ponto4D(-width-100, -height+50),
                 new Ponto4D(-width-100, -height),
                 new Ponto4D(width+100, -height)
+            });
+            Global.objects.Add(ground);
+        }
+
+        private void CraeteCeilling(int width, int height)
+        {
+            Ground ground = new Ground(new List<Ponto4D> { 
+                new Ponto4D(width+100, height-50),
+                new Ponto4D(-width-100, height-50),
+                new Ponto4D(-width-100, height),
+                new Ponto4D(width+100, height)
             });
             Global.objects.Add(ground);
         }

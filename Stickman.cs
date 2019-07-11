@@ -12,7 +12,7 @@ namespace stick_man
         private double sizeFactor = 0.2;
 
         private const double speed = 3.0;
-        private const double jumpSpeed = (Physics.GRAVITY_FORCE*-2.5);
+        private double jumpSpeed = (Physics.GRAVITY_FORCE*-2.5);
         private double jumpLimit;
         private double jumpHeight = 100;
         private bool isJumping = false;
