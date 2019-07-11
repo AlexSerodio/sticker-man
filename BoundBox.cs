@@ -132,6 +132,7 @@ namespace stick_man
         }
 
         public void DesenharBBox() {
+            /*
             GL.Color3(Color.Yellow);
 
             GL.PointSize(5);
@@ -164,6 +165,7 @@ namespace stick_man
                 GL.Vertex3(maiorX, maiorY, maiorZ);
                 GL.Vertex3(maiorX, menorY, maiorZ);
             GL.End();
+            */
         }
 
         public override string ToString() => "{ Xmin: " + menorX + " | Xmax: " + maiorX 
