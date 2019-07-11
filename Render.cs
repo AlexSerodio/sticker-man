@@ -26,7 +26,7 @@ namespace stick_man
       target = new Vector3(0, 0, 0);
 
       world = new World(width, height);
-      player = new Stickman(new Ponto4D(0, 0), 0.2, world);
+      player = new Stickman(new Ponto4D(0, 0), 0.2);
 
       background = new Background();
     }

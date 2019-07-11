@@ -11,7 +11,6 @@ namespace stick_man
 
         public Box(List<Ponto4D> vertices, double extrudeDistance) : base(vertices, extrudeDistance) {
             SetHasGravity(true);
-            // SetColor(Color.Blue);
 
             texture = Texture.GetTexture("box.jpg");
         }

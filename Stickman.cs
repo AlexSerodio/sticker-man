@@ -8,16 +8,15 @@ namespace stick_man
     {
 
         private Ponto4D root;
-        public List<GameObject> limbs;
+        private List<GameObject> limbs;
         private double sizeFactor = 0.2;
 
         private const double speed = 3.0;
         private double jumpSpeed = (Physics.GRAVITY_FORCE*-2.5);
         private double jumpLimit;
-        private double jumpHeight = 100;
+        private double jumpHeight = 60;
         private bool isJumping = false;
 
-        private World world;
         private Animator animator;
         private Thread walkThread;
 
@@ -41,11 +40,10 @@ namespace stick_man
             PrepareThread();
         }
 
-        public Stickman(Ponto4D root, double sizeFactor, World world) : base()
+        public Stickman(Ponto4D root, double sizeFactor) : base()
         {
             this.root = root;
             this.sizeFactor = sizeFactor;
-            this.world = world;
             limbs = new List<GameObject>();
             animator = new Animator();
 

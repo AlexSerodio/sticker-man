@@ -8,7 +8,6 @@ namespace stick_man
     {
 
         private Ground ground;
-        private Camera camera;
 
         private bool creatingPlataform = false;
         private bool creatingRampRight = false;
@@ -33,13 +32,9 @@ namespace stick_man
 
         public World(int width, int height)
         {
-            camera = new Camera(0, width, 0, height, -1, 1);
-
             CraeteGround(width/2, height/2);
             CraeteGround(width/2, -height/2);
         }
-
-        public void UpdateCamera() => camera.Update();
 
         public GameObject SelectObject(Ponto4D pontoClicado)
         {
