@@ -5,6 +5,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 using System.Threading;
+using System.Drawing.Imaging;
 
 namespace stick_man
 {
@@ -17,9 +18,13 @@ namespace stick_man
     private Vector3 eye;
     private Vector3 target;
     private Vector3 up = Vector3.UnitY;
-    private int mouseXOffset = 300;
-    private int mouseYOffset = 350;
+    private int mouseXOffset = 0;
+    private int mouseYOffset = 0;
     private double objectSpeed = 5.0;
+
+    // Textura fundo
+    Bitmap bitmap = new Bitmap("texture.jpg");
+    int texture;
 
     public Render(int width, int height, int distance) : base(width, height)
     { 
@@ -38,6 +43,23 @@ namespace stick_man
       GL.ClearColor(Color.Gray);
       GL.Enable(EnableCap.DepthTest);
       GL.Enable(EnableCap.CullFace);
+
+      GL.Enable(EnableCap.Texture2D);
+
+      GL.Hint(HintTarget.PerspectiveCorrectionHint, HintMode.Nicest);
+      GL.GenTextures(1, out texture);
+      GL.BindTexture(TextureTarget.Texture2D, texture);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)TextureMinFilter.Linear);
+      GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)TextureMagFilter.Linear);
+
+      BitmapData data = bitmap.LockBits(new System.Drawing.Rectangle(0, 0, bitmap.Width, bitmap.Height),
+          ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
+
+      GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, data.Width, data.Height, 0,
+          OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
+
+      bitmap.UnlockBits(data);        
+
     }
 
     protected override void OnResize(EventArgs e) 
@@ -71,9 +93,12 @@ namespace stick_man
       GL.MatrixMode(MatrixMode.Modelview);
       GL.LoadMatrix(ref modelview);
 
+      GL.BindTexture(TextureTarget.Texture2D, texture);
+
       world.DrawObjects();
       player.Draw();
-
+      
+      GL.Disable(EnableCap.Texture2D);
       this.SwapBuffers();
     }
 
