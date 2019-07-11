@@ -10,7 +10,10 @@ namespace stick_man
         private Ground ground;
         private Camera camera;
 
-        private bool instantiationMode = false;
+        private bool creatingPlataform = false;
+        private bool creatingRampRight = false;
+        private bool creatingRampLeft = false;
+
         private bool creationMode = false;
         private bool creatingObject = false;
         
@@ -61,9 +64,17 @@ namespace stick_man
             }
         }
 
-        public bool IsInstantiationModeOn() => instantiationMode;
-        public void SetInstantiationMode(bool active) => instantiationMode = active;
-        public void SwitchInstantiationMode() => instantiationMode = !instantiationMode;
+        public bool IsCreatingPlataform() => creatingPlataform;
+        public void SetCreatingPlataform(bool active) => creatingPlataform = active;
+        public void SwitchCreatingPlataform() => creatingPlataform = !creatingPlataform;
+
+        public bool IsCreatingRampRight() => creatingRampRight;
+        public void SetCreatingRampRight(bool active) => creatingRampRight = active;
+        public void SwitchCreatingRampRight() => creatingRampRight = !creatingRampRight;
+
+        public bool IsCreatingRampLeft() => creatingRampLeft;
+        public void SetCreatingRampLeft(bool active) => creatingRampLeft = active;
+        public void SwitchCreatingRampLeft() => creatingRampLeft = !creatingRampLeft;
 
         public bool IsCreationModeOn() => creationMode;
         public void SetCreationMode(bool active) => creationMode = active;
@@ -94,7 +105,7 @@ namespace stick_man
                 obj.SetPrimitive(primitive);
         }
 
-        public void CreateRectangle(Ponto4D center)
+        public void CreatePlataform(Ponto4D center)
         {
             GameObject rectangle = new Rectangle(new List<Ponto4D> { 
                 new Ponto4D(center.X+50, center.Y+10, 50),
@@ -104,6 +115,30 @@ namespace stick_man
             });
 
             Global.objects.Add(rectangle);
+            SetSelectedObject(GetLastObject());
+        }
+
+        public void CreateRampRight(Ponto4D center) {
+            GameObject rectangle = new Rectangle(new List<Ponto4D> { 
+                new Ponto4D(center.X+50, center.Y+50, 50),
+                new Ponto4D(center.X+25, center.Y+50, 50),
+                new Ponto4D(center.X-100, center.Y-50, 50),
+                new Ponto4D(center.X-75, center.Y-50, 50)
+            });
+
+            objects.Add(rectangle);
+            SetSelectedObject(GetLastObject());
+        }
+
+        public void CreateRampLeft(Ponto4D center) {
+            GameObject rectangle = new Rectangle(new List<Ponto4D> { 
+                new Ponto4D(center.X+100, center.Y+50, 50),
+                new Ponto4D(center.X+75, center.Y+50, 50),
+                new Ponto4D(center.X-50, center.Y-50, 50),
+                new Ponto4D(center.X-25, center.Y-50, 50)
+            });
+
+            objects.Add(rectangle);
             SetSelectedObject(GetLastObject());
         }
 

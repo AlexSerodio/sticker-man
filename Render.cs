@@ -97,8 +97,13 @@ namespace stick_man
       Ponto4D clickedPoint = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
 
       if(e.Button == MouseButton.Left) {
-        if(world.IsInstantiationModeOn())
-          world.CreateRectangle(clickedPoint);
+
+        if(world.IsCreatingPlataform())
+          world.CreatePlataform(clickedPoint);
+        else if(world.IsCreatingRampLeft())
+          world.CreateRampLeft(clickedPoint);
+        else if(world.IsCreatingRampRight())
+          world.CreateRampRight(clickedPoint);
         else
           world.SetSelectedObject(world.SelectObject(clickedPoint));
 
@@ -174,16 +179,21 @@ namespace stick_man
     }
 
     private void HandlePressedKeys(KeyboardKeyEventArgs e) {
-      // int temp = 50;
       switch(e.Key) {
-        case Key.Z:
-          world.SwitchInstantiationMode();
-
-          // deprecated
-          // world.SwitchCreationMode();
-          // world.GetLastObject().FinishObject();
-          // if(world.IsCreationModeOn())
-          //   world.SetCreatingObject(false);
+        case Key.Number1:
+          world.SetCreatingPlataform(true);
+          world.SetCreatingRampLeft(false);
+          world.SetCreatingRampRight(false);
+          break;
+        case Key.Number2:
+          world.SetCreatingRampRight(true);
+          world.SetCreatingRampLeft(false);
+          world.SetCreatingPlataform(false);
+          break;
+        case Key.Number3:
+          world.SetCreatingRampLeft(true);
+          world.SetCreatingRampRight(false);
+          world.SetCreatingPlataform(false);
           break;
         case Key.C:
           world.GetLastObject().FinishObject();
@@ -192,48 +202,6 @@ namespace stick_man
         case Key.Escape:
           this.Exit();
           break;
-        // case Key.O:
-        //   world.SetPrimitive(PrimitiveType.Polygon);
-        // break;
-        // case Key.P:
-        //   world.SetPrimitive(PrimitiveType.LineStrip);
-        // break;
-        // case Key.Right:
-        //   eye.X += temp;
-        //   break;
-        // case Key.Left:
-        //   eye.X -= temp;
-        //   break;
-        // case Key.Up:
-        //   eye.Y += temp;
-        //   break;
-        // case Key.Down:
-        //   eye.Y -= temp;
-        //   break;
-        // case Key.Home:
-        //   eye.Z += temp;
-        //   break;
-        // case Key.End:
-        //   eye.Z -= temp;
-        //   break;
-        // case Key.L:
-        //   target.X += temp;
-        //   break;
-        // case Key.J:
-        //   target.X -= temp;
-        //   break;
-        // case Key.I:
-        //   target.Y += temp;
-        //   break;
-        // case Key.K:
-        //   target.Y -= temp;
-        //   break;
-        // case Key.N:
-        //   target.Z += temp;
-        //   break;
-        // case Key.M:
-        //   target.Z -= temp;
-        //   break;
         case Key.R:
           if(world.HasSelectedObject())
             world.GetSelectedObject().Scale(1.1);
