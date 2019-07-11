@@ -35,6 +35,8 @@ namespace stick_man
       GL.ClearColor(Color.Gray);
       GL.Enable(EnableCap.DepthTest);
       GL.Enable(EnableCap.CullFace);
+      GL.Enable(EnableCap.Texture2D);
+
     }
 
     protected override void OnResize(EventArgs e) 
