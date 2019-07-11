@@ -6,7 +6,7 @@ namespace stick_man
     public class Rectangle : GameObject
     {
 
-        private List<Ponto4D> extrudedVertices = new List<Ponto4D>();
+        protected List<Ponto4D> extrudedVertices = new List<Ponto4D>();
 
         // UR, UL, DL, DR
         public Rectangle(List<Ponto4D> vertices, double extrudeDistance = 100) : base() {
