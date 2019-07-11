@@ -10,7 +10,13 @@ namespace stick_man
         private Ponto4D root;
         public List<GameObject> limbs;
         private double sizeFactor = 0.2;
-        private double speed = 2.0;
+
+        private const double speed = 3.0;
+        private const double jumpSpeed = (Physics.GRAVITY_FORCE*-2.5);
+        private double jumpLimit;
+        private double jumpHeight = 100;
+        private bool isJumping = false;
+
         private World world;
         private Animator animator;
         private Thread walkThread;
@@ -20,7 +26,10 @@ namespace stick_man
         public void SetWalking(bool value) => walking = value;
         public bool GetWalking() => walking;
 
-        public Stickman()
+        public bool IsJumping() => isJumping;
+        public void SetIsJumping(bool value) => isJumping = value;
+
+        public Stickman() : base()
         {
             this.root = new Ponto4D();
             this.sizeFactor = 0.2;
@@ -32,7 +41,7 @@ namespace stick_man
             PrepareThread();
         }
 
-        public Stickman(Ponto4D root, double sizeFactor, World world)
+        public Stickman(Ponto4D root, double sizeFactor, World world) : base()
         {
             this.root = root;
             this.sizeFactor = sizeFactor;
@@ -59,8 +68,8 @@ namespace stick_man
             }
         }
 
-        public void SetSpeed(double speed) => this.speed = speed;
-        public double GetSpeed() => this.speed;
+        // public void SetSpeed(double speed) => this.speed = speed;
+        public double GetSpeed() => speed;
 
         public Ponto4D GetRoot() => root;
 
@@ -122,16 +131,6 @@ namespace stick_man
             base.SetVertices(vertices);
         }
 
-        public bool Collided()
-        {
-            foreach(GameObject obj in world.GetObjects()) {
-                if(obj.IsColliding(this))
-                    return true;
-            }
-
-            return false;
-        }
-
         public void MoveLeft() {
             SetWalking(true);
             base.Translate(-speed, 0, 0);
@@ -148,20 +147,27 @@ namespace stick_man
                 base.Translate(-speed, 0, 0);
         }
 
-        public void MoveUp() {
-            SetWalking(true);
-            base.Translate(0, speed, 0);
-
-            if(this.Collided())
-                base.Translate(0, -speed, 0);
-        }
-
         public void MoveDown() {
             SetWalking(true);
             base.Translate(0, -speed, 0);
 
             if(this.Collided())
                 base.Translate(0, speed, 0);
+        }
+
+        public void MoveUp() {
+            base.Translate(0, jumpSpeed, 0);
+
+            if(this.Collided())
+                base.Translate(0, -jumpSpeed, 0);
+        }
+
+        public bool ReachedJumpLimit() => isJumping && GetRealVertice(0).Y < jumpLimit;
+
+        public void StartJump() 
+        {
+            isJumping = true;
+            jumpLimit = GetRealVertice(0).Y + jumpHeight;
         }
 
         public override void Draw() {

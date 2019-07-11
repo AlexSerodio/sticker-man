@@ -15,12 +15,15 @@ namespace stick_man
         private Transformacao4D transform;
         private List<Ponto4D> vertices;
         private PrimitiveType primitive;
+        private bool hasGravity;
 
         public GameObject(Tag tag = Tag.UNTTAGED) {
             transform = new Transformacao4D();
             boundBox = new BoundBox();
             primitive = PrimitiveType.Lines;
             this.vertices = new List<Ponto4D>();
+
+            SetHasGravity(true);
         }
 
         public GameObject(List<Ponto4D> vertices, Tag tag = Tag.UNTTAGED) {
@@ -28,12 +31,15 @@ namespace stick_man
             boundBox = new BoundBox();
             primitive = PrimitiveType.Lines;
             SetVertices(vertices);
+
+            SetHasGravity(true);
         }
 
         public void SetColor(Color color) => this.color = color;
         public Color GetColor() => this.color != null ? this.color : Color.Black;
 
         public List<Ponto4D> GetVertices() => this.vertices;
+        public Ponto4D GetRealVertice(int index) => GetTransform().TransformPoint(vertices[index]);
 
         public void SetVertices(List<Ponto4D> vertices) {
             this.vertices = new List<Ponto4D>();
@@ -144,6 +150,25 @@ namespace stick_man
 
         public bool IsColliding(GameObject other) {
             return boundBox.IsColliding(this, other);
+        }
+
+        public bool Collided()
+        {
+            foreach(GameObject obj in Global.objects) {
+                if(obj.IsColliding(this))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void SetHasGravity(bool value) => hasGravity = value;
+        public bool HasGravity() => hasGravity;
+
+        public void Gravity() {
+            this.Translate(0, Physics.GRAVITY_FORCE, 0);
+            if(this.Collided())
+                this.Translate(0, -Physics.GRAVITY_FORCE, 0);
         }
     }
 }

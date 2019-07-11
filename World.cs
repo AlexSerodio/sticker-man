@@ -13,23 +13,21 @@ namespace stick_man
         private bool creatingPlataform = false;
         private bool creatingRampRight = false;
         private bool creatingRampLeft = false;
+        private bool creatingBox = false;
 
-        private bool creationMode = false;
-        private bool creatingObject = false;
-        private List<GameObject> objects = new List<GameObject>();
+        // private bool creationMode = false;
+        // private bool creatingObject = false;
+        
         private GameObject selectedObject;
         private bool scaling = false;
 
-        public GameObject GetSelectedObject() 
-        {
-            return selectedObject;
-        }
+        public GameObject GetSelectedObject() => selectedObject;
 
         public void SetSelectedObject(GameObject obj) {
             if(obj != null)
                 obj.SetColor(Color.Green);
             if(selectedObject != null)
-                selectedObject.SetColor(Color.Black);
+                selectedObject.SetColor(Color.YellowGreen);
 
             selectedObject = obj;
         }
@@ -47,7 +45,7 @@ namespace stick_man
 
         public GameObject SelectObject(Ponto4D pontoClicado)
         {
-            foreach(GameObject obj in objects) {
+            foreach(GameObject obj in Global.objects) {
                 if(obj.GetBoundBox().IsColliding(pontoClicado, obj))
                     return obj;
             }
@@ -55,50 +53,57 @@ namespace stick_man
             return null;
         }
 
-        public void DrawObjects()
+        public void HandleObjects()
         {
-            foreach(GameObject obj in objects)
+            foreach(GameObject obj in Global.objects) {
                 obj.Draw();
+                if(obj.HasGravity())
+                    obj.Gravity();
+            }
         }
 
         public bool IsCreatingPlataform() => creatingPlataform;
         public void SetCreatingPlataform(bool active) => creatingPlataform = active;
-        public void SwitchCreatingPlataform() => creatingPlataform = !creatingPlataform;
+        // public void SwitchCreatingPlataform() => creatingPlataform = !creatingPlataform;
 
         public bool IsCreatingRampRight() => creatingRampRight;
         public void SetCreatingRampRight(bool active) => creatingRampRight = active;
-        public void SwitchCreatingRampRight() => creatingRampRight = !creatingRampRight;
+        // public void SwitchCreatingRampRight() => creatingRampRight = !creatingRampRight;
 
         public bool IsCreatingRampLeft() => creatingRampLeft;
         public void SetCreatingRampLeft(bool active) => creatingRampLeft = active;
-        public void SwitchCreatingRampLeft() => creatingRampLeft = !creatingRampLeft;
 
-        public bool IsCreationModeOn() => creationMode;
-        public void SetCreationMode(bool active) => creationMode = active;
-        public void SwitchCreationMode() => creationMode = !creationMode;
+        public bool IsCreatingBox() => creatingBox;
+        public void SetCreatingBox(bool active) => creatingBox = active;
 
-        public bool IsCreatingObject() => creatingObject;
-        public void SetCreatingObject(bool active) => creatingObject = active;
+        // public void SwitchCreatingRampLeft() => creatingRampLeft = !creatingRampLeft;
+
+        // public bool IsCreationModeOn() => creationMode;
+        // public void SetCreationMode(bool active) => creationMode = active;
+        // public void SwitchCreationMode() => creationMode = !creationMode;
+
+        // public bool IsCreatingObject() => creatingObject;
+        // public void SetCreatingObject(bool active) => creatingObject = active;
         
         private void CraeteGround(int width, int height)
         {
             Ground ground = new Ground(new List<Ponto4D> { 
-                new Ponto4D(width, -height+50),
-                new Ponto4D(-width, -height+50),
-                new Ponto4D(-width, -height),
-                new Ponto4D(width, -height),
+                new Ponto4D(width+100, -height+50),
+                new Ponto4D(-width-100, -height+50),
+                new Ponto4D(-width-100, -height),
+                new Ponto4D(width+100, -height)
             });
-            objects.Add(ground);
+            Global.objects.Add(ground);
         }
 
-        public void AddObject(GameObject newObject) => objects.Add(newObject);
-        public GameObject GetObject(int index) => objects[index];
-        public GameObject GetLastObject() => objects[objects.Count-1];
-        public List<GameObject> GetObjects() => objects;
+        public void AddObject(GameObject newObject) => Global.objects.Add(newObject);
+        public GameObject GetObject(int index) => Global.objects[index];
+        public GameObject GetLastObject() => Global.objects[Global.objects.Count-1];
+        public List<GameObject> GetObjects() => Global.objects;
 
         public void SetPrimitive(PrimitiveType primitive) 
         {
-            foreach(GameObject obj in objects)
+            foreach(GameObject obj in Global.objects)
                 obj.SetPrimitive(primitive);
         }
 
@@ -111,7 +116,7 @@ namespace stick_man
                 new Ponto4D(center.X+50, center.Y-10, 50)
             });
 
-            objects.Add(rectangle);
+            Global.objects.Add(rectangle);
             SetSelectedObject(GetLastObject());
         }
 
@@ -123,7 +128,7 @@ namespace stick_man
                 new Ponto4D(center.X-75, center.Y-50, 50)
             });
 
-            objects.Add(rectangle);
+            Global.objects.Add(rectangle);
             SetSelectedObject(GetLastObject());
         }
 
@@ -135,8 +140,21 @@ namespace stick_man
                 new Ponto4D(center.X-25, center.Y-50, 50)
             });
 
-            objects.Add(rectangle);
+            Global.objects.Add(rectangle);
             SetSelectedObject(GetLastObject());
+        }
+
+        public void CreateBox(Ponto4D center)
+        {
+            GameObject box = new Box(new List<Ponto4D> {
+                new Ponto4D(center.X+10, center.Y+10, 10),
+                new Ponto4D(center.X-10, center.Y+10, 10),
+                new Ponto4D(center.X-10, center.Y-10, 10),
+                new Ponto4D(center.X+10, center.Y-10, 10)
+            }, 10);
+
+            Global.objects.Add(box);
+            // SetSelectedObject(GetLastObject());
         }
 
         public void SwitchScalingMode() => this.scaling = !this.scaling;

@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 
 namespace stick_man
 {
@@ -9,17 +10,18 @@ namespace stick_man
         private List<Ponto4D> extrudedVertices = new List<Ponto4D>();
 
         // UR, UL, DL, DR
-        public Rectangle(List<Ponto4D> vertices) {
+        public Rectangle(List<Ponto4D> vertices, double extrudeDistance = 100) : base() {
             base.SetPrimitive(PrimitiveType.Polygon);
             base.SetVertices(vertices);
+            base.SetHasGravity(false);
 
-            Extrude();
+            Extrude(extrudeDistance);
         }
 
-        private void Extrude()
+        private void Extrude(double extrudeDistance)
         {
             foreach (Ponto4D vertice in base.GetVertices())
-                extrudedVertices.Add(new Ponto4D(vertice.X, vertice.Y, vertice.Z - 100));
+                extrudedVertices.Add(new Ponto4D(vertice.X, vertice.Y, vertice.Z - extrudeDistance));
         }
 
         public override void Draw()
@@ -64,6 +66,8 @@ namespace stick_man
             GL.End();
 
             GL.PopMatrix();
+
+            GetBoundBox().DesenharBBox();
         }
 
     }
