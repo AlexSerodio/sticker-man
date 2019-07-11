@@ -1,10 +1,8 @@
 using System;
 using System.Drawing;
-using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using System.Threading;
 
 namespace stick_man
 {
@@ -112,31 +110,8 @@ namespace stick_man
         else
           world.SetSelectedObject(world.SelectObject(clickedPoint));
 
-      } 
-      // else if(e.Button == MouseButton.Right) {
-      //   if(world.IsCreationModeOn()) {
-      //     if(!world.IsCreatingObject()) {
-      //       world.AddObject(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
-      //       world.SetCreatingObject(true);
-      //     } else {
-      //       world.GetLastObject().AddVertice(clickedPoint);
-      //     }
-      //   }
-      // }
+      }
     }
-
-    // protected override void OnMouseMove(MouseMoveEventArgs e) {
-    //   base.OnMouseMove(e);
-
-    //   if(world.IsCreationModeOn()) {
-    //       if(world.IsCreatingObject()) {
-    //         Ponto4D point = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
-    //         GameObject lastObject = world.GetLastObject();
-    //         int lastVerticePosition = lastObject.GetVertices().Count-1;
-    //         lastObject.UpdateVertice(point, lastVerticePosition);
-    //       }
-    //   }
-    // }
 
     private void HandlePlayerMovement() 
     {
@@ -212,10 +187,6 @@ namespace stick_man
           world.SetCreatingRampRight(false);
           world.SetCreatingPlataform(false);
           break;
-        // case Key.C:
-        //   world.GetLastObject().FinishObject();
-        //   world.SetCreatingObject(false);
-        //   break;
         case Key.Escape:
           this.Exit();
           break;

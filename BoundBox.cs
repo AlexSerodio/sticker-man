@@ -98,13 +98,9 @@ namespace stick_man
                 if(ponto.X > menorX) {
                     if(ponto.Y < maiorY) {
                         if(ponto.Y > menorY) {
-                            // if(ponto.Z < maiorZ) {
-                                // if(ponto.Z > menorZ) {
-                                    // if(collided is GeometricObject)
-                                    //     return ScanLine(ponto, collided.GetVertices()) != 0;
-                                    return true;
-                                // }
-                            // }
+                            // if(collided is GeometricObject)
+                            //     return ScanLine(ponto, collided.GetVertices()) != 0;
+                            return true;
                         }
                     }
                 }

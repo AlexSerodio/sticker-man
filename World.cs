@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
@@ -14,9 +13,6 @@ namespace stick_man
         private bool creatingRampRight = false;
         private bool creatingRampLeft = false;
         private bool creatingBox = false;
-
-        // private bool creationMode = false;
-        // private bool creatingObject = false;
         
         private GameObject selectedObject;
         private bool scaling = false;
@@ -64,11 +60,9 @@ namespace stick_man
 
         public bool IsCreatingPlataform() => creatingPlataform;
         public void SetCreatingPlataform(bool active) => creatingPlataform = active;
-        // public void SwitchCreatingPlataform() => creatingPlataform = !creatingPlataform;
 
         public bool IsCreatingRampRight() => creatingRampRight;
         public void SetCreatingRampRight(bool active) => creatingRampRight = active;
-        // public void SwitchCreatingRampRight() => creatingRampRight = !creatingRampRight;
 
         public bool IsCreatingRampLeft() => creatingRampLeft;
         public void SetCreatingRampLeft(bool active) => creatingRampLeft = active;
@@ -76,15 +70,20 @@ namespace stick_man
         public bool IsCreatingBox() => creatingBox;
         public void SetCreatingBox(bool active) => creatingBox = active;
 
-        // public void SwitchCreatingRampLeft() => creatingRampLeft = !creatingRampLeft;
+        public void AddObject(GameObject newObject) => Global.objects.Add(newObject);
+        public GameObject GetObject(int index) => Global.objects[index];
+        public GameObject GetLastObject() => Global.objects[Global.objects.Count-1];
+        public List<GameObject> GetObjects() => Global.objects;
 
-        // public bool IsCreationModeOn() => creationMode;
-        // public void SetCreationMode(bool active) => creationMode = active;
-        // public void SwitchCreationMode() => creationMode = !creationMode;
+        public void SwitchScalingMode() => this.scaling = !this.scaling;
+        public bool IsScalingModeOn() => this.scaling;
 
-        // public bool IsCreatingObject() => creatingObject;
-        // public void SetCreatingObject(bool active) => creatingObject = active;
-        
+        public void SetPrimitive(PrimitiveType primitive) 
+        {
+            foreach(GameObject obj in Global.objects)
+                obj.SetPrimitive(primitive);
+        }
+
         private void CraeteGround(int width, int height)
         {
             Ground ground = new Ground(new List<Ponto4D> { 
@@ -94,17 +93,6 @@ namespace stick_man
                 new Ponto4D(width+100, -height)
             });
             Global.objects.Add(ground);
-        }
-
-        public void AddObject(GameObject newObject) => Global.objects.Add(newObject);
-        public GameObject GetObject(int index) => Global.objects[index];
-        public GameObject GetLastObject() => Global.objects[Global.objects.Count-1];
-        public List<GameObject> GetObjects() => Global.objects;
-
-        public void SetPrimitive(PrimitiveType primitive) 
-        {
-            foreach(GameObject obj in Global.objects)
-                obj.SetPrimitive(primitive);
         }
 
         public void CreatePlataform(Ponto4D center)
@@ -154,11 +142,6 @@ namespace stick_man
             }, 10);
 
             Global.objects.Add(box);
-            // SetSelectedObject(GetLastObject());
         }
-
-        public void SwitchScalingMode() => this.scaling = !this.scaling;
-
-        public bool IsScalingModeOn() => this.scaling;
     }
 }

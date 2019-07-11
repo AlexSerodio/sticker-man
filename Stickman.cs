@@ -68,7 +68,6 @@ namespace stick_man
             }
         }
 
-        // public void SetSpeed(double speed) => this.speed = speed;
         public double GetSpeed() => speed;
 
         public Ponto4D GetRoot() => root;

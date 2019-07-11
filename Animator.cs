@@ -1,6 +1,5 @@
-using System.Collections.Generic;
-
-namespace stick_man {
+namespace stick_man
+{
     public class Animator {
         
         double leftUpperLeg_o_x, leftUpperLeg_o_y, leftUpperLeg_f_x, leftUpperLeg_f_y = 0; 
