@@ -39,6 +39,7 @@ namespace stick_man
         public Color GetColor() => this.color != null ? this.color : Color.Black;
 
         public List<Ponto4D> GetVertices() => this.vertices;
+        public Ponto4D GetRealVertice(int index) => GetTransform().TransformPoint(vertices[index]);
 
         public void SetVertices(List<Ponto4D> vertices) {
             this.vertices = new List<Ponto4D>();

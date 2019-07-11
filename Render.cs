@@ -27,7 +27,6 @@ namespace stick_man
       target = new Vector3(0, 0, 0);
 
       world = new World(width, height);
-      // player = new Stickman(new Ponto4D(-1000, -1000), 0.2, world);
       player = new Stickman(new Ponto4D(0, 0), 0.2, world);
     }
 
@@ -73,6 +72,11 @@ namespace stick_man
       world.HandleObjects();
       player.Draw();
       player.Gravity();
+
+      if(player.ReachedJumpLimit())
+          player.MoveUp();
+      else
+          player.SetIsJumping(false);
 
       this.SwapBuffers();
     }
@@ -144,11 +148,13 @@ namespace stick_man
       if(keyState.IsKeyDown(Key.D))
         player.MoveRight();
 
-      if(keyState.IsKeyDown(Key.W))
-        player.MoveUp();
-
       if(keyState.IsKeyDown(Key.S))
         player.MoveDown();
+      
+      if(keyState.IsKeyDown(Key.W)) {
+        if(!player.IsJumping())
+          player.StartJump();
+      }
     }
 
     private void HandleObjectMovement()
