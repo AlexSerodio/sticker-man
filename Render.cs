@@ -26,7 +26,7 @@ namespace stick_man
       target = new Vector3(0, 0, 0);
 
       world = new World(width, height);
-      player = new Stickman(new Ponto4D(0, 0), 0.2, world);
+      player = new Stickman(new Ponto4D(0, 0), 0.2);
 
       background = new Background();
     }
@@ -235,6 +235,12 @@ namespace stick_man
         case Key.G:
           if(world.HasSelectedObject())
             world.GetSelectedObject().Rotate(-1.1);
+          break;
+        case Key.P:
+          Physics.InvertGravity();
+          break;
+        case Key.BackSpace:
+          world.RemoveBoxes();
           break;
       }
     }

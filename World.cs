@@ -8,7 +8,6 @@ namespace stick_man
     {
 
         private Ground ground;
-        private Camera camera;
 
         private bool creatingPlataform = false;
         private bool creatingRampRight = false;
@@ -33,12 +32,9 @@ namespace stick_man
 
         public World(int width, int height)
         {
-            camera = new Camera(0, width, 0, height, -1, 1);
-
             CraeteGround(width/2, height/2);
+            CraeteGround(width/2, -height/2);
         }
-
-        public void UpdateCamera() => camera.Update();
 
         public GameObject SelectObject(Ponto4D pontoClicado)
         {
@@ -96,6 +92,17 @@ namespace stick_man
             Global.objects.Add(ground);
         }
 
+        private void CraeteCeilling(int width, int height)
+        {
+            Ground ground = new Ground(new List<Ponto4D> { 
+                new Ponto4D(width+100, height-50),
+                new Ponto4D(-width-100, height-50),
+                new Ponto4D(-width-100, height),
+                new Ponto4D(width+100, height)
+            });
+            Global.objects.Add(ground);
+        }
+
         public void CreatePlataform(Ponto4D center)
         {
             GameObject rectangle = new Rectangle(new List<Ponto4D> { 
@@ -143,6 +150,19 @@ namespace stick_man
             }, 10);
 
             Global.objects.Add(box);
+        }
+
+        public void RemoveBoxes()
+        {
+            for (int i = 0; i < Global.objects.Count; i++) {
+                if(Global.objects[i] is Box)
+                    Global.objects.Remove(Global.objects[i]);
+            }
+        }
+
+        public void RemovePlataforms()
+        {
+            
         }
     }
 }

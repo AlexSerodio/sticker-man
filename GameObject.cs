@@ -148,9 +148,7 @@ namespace stick_man
             boundBox.DesenharBBox();
         }
 
-        public bool IsColliding(GameObject other) {
-            return boundBox.IsColliding(this, other);
-        }
+        private bool IsColliding(GameObject other) => boundBox.IsColliding(this, other);
 
         public bool Collided()
         {
