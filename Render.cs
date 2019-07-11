@@ -212,6 +212,9 @@ namespace stick_man
           if(world.HasSelectedObject())
             world.GetSelectedObject().Rotate(-1.1);
           break;
+        case Key.P:
+          Physics.InvertGravity();
+          break;
       }
     }
   }
