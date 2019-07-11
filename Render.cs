@@ -55,8 +55,7 @@ namespace stick_man
     {
       base.OnUpdateFrame(e);
 
-      if(!world.IsCreationModeOn())
-        HandlePlayerMovement();
+      HandlePlayerMovement();
 
       if(world.HasSelectedObject())
         HandleObjectMovement();
@@ -104,33 +103,36 @@ namespace stick_man
           world.CreateRampLeft(clickedPoint);
         else if(world.IsCreatingRampRight())
           world.CreateRampRight(clickedPoint);
+        else if(world.IsCreatingBox())
+          world.CreateBox(clickedPoint);
         else
           world.SetSelectedObject(world.SelectObject(clickedPoint));
 
-      } else if(e.Button == MouseButton.Right) {
-        if(world.IsCreationModeOn()) {
-          if(!world.IsCreatingObject()) {
-            world.AddObject(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
-            world.SetCreatingObject(true);
-          } else {
-            world.GetLastObject().AddVertice(clickedPoint);
-          }
-        }
-      }
+      } 
+      // else if(e.Button == MouseButton.Right) {
+      //   if(world.IsCreationModeOn()) {
+      //     if(!world.IsCreatingObject()) {
+      //       world.AddObject(new GeometricObject(new List<Ponto4D>(){ clickedPoint, clickedPoint }));
+      //       world.SetCreatingObject(true);
+      //     } else {
+      //       world.GetLastObject().AddVertice(clickedPoint);
+      //     }
+      //   }
+      // }
     }
 
-    protected override void OnMouseMove(MouseMoveEventArgs e) {
-      base.OnMouseMove(e);
+    // protected override void OnMouseMove(MouseMoveEventArgs e) {
+    //   base.OnMouseMove(e);
 
-      if(world.IsCreationModeOn()) {
-          if(world.IsCreatingObject()) {
-            Ponto4D point = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
-            GameObject lastObject = world.GetLastObject();
-            int lastVerticePosition = lastObject.GetVertices().Count-1;
-            lastObject.UpdateVertice(point, lastVerticePosition);
-          }
-      }
-    }
+    //   if(world.IsCreationModeOn()) {
+    //       if(world.IsCreatingObject()) {
+    //         Ponto4D point = new Ponto4D(e.X-mouseXOffset, Height-e.Y-mouseYOffset);
+    //         GameObject lastObject = world.GetLastObject();
+    //         int lastVerticePosition = lastObject.GetVertices().Count-1;
+    //         lastObject.UpdateVertice(point, lastVerticePosition);
+    //       }
+    //   }
+    // }
 
     private void HandlePlayerMovement() 
     {
@@ -184,21 +186,30 @@ namespace stick_man
           world.SetCreatingPlataform(true);
           world.SetCreatingRampLeft(false);
           world.SetCreatingRampRight(false);
+          world.SetCreatingBox(false);
           break;
         case Key.Number2:
           world.SetCreatingRampRight(true);
           world.SetCreatingRampLeft(false);
           world.SetCreatingPlataform(false);
+          world.SetCreatingBox(false);
           break;
         case Key.Number3:
           world.SetCreatingRampLeft(true);
           world.SetCreatingRampRight(false);
           world.SetCreatingPlataform(false);
+          world.SetCreatingBox(false);
           break;
-        case Key.C:
-          world.GetLastObject().FinishObject();
-          world.SetCreatingObject(false);
+        case Key.Number4:
+          world.SetCreatingBox(true);
+          world.SetCreatingRampLeft(false);
+          world.SetCreatingRampRight(false);
+          world.SetCreatingPlataform(false);
           break;
+        // case Key.C:
+        //   world.GetLastObject().FinishObject();
+        //   world.SetCreatingObject(false);
+        //   break;
         case Key.Escape:
           this.Exit();
           break;

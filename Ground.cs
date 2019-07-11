@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Drawing;
-using OpenTK.Graphics.OpenGL;
 
 namespace stick_man
 {

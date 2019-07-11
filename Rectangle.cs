@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using OpenTK.Graphics.OpenGL;
+using System.Drawing;
 
 namespace stick_man
 {
@@ -9,9 +10,10 @@ namespace stick_man
         private List<Ponto4D> extrudedVertices = new List<Ponto4D>();
 
         // UR, UL, DL, DR
-        public Rectangle(List<Ponto4D> vertices, double extrudeDistance = 100) {
+        public Rectangle(List<Ponto4D> vertices, double extrudeDistance = 100) : base() {
             base.SetPrimitive(PrimitiveType.Polygon);
             base.SetVertices(vertices);
+            base.SetHasGravity(false);
 
             Extrude(extrudeDistance);
         }
