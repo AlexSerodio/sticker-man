@@ -7,7 +7,7 @@ namespace stick_man
     public class Ground : Rectangle
     {
 
-        int texture;
+        private int texture;
 
         public Ground(List<Ponto4D> vertices) : base(vertices, 200) {
             base.SetTag(Tag.GROUND);
@@ -25,7 +25,7 @@ namespace stick_man
 
             GL.Begin(PrimitiveType.Quads);
             // front
-            GL.Color3(Color.Gray);
+            GL.Color3(Color.White);
             GL.Normal3(0, 0, 1);
             GL.TexCoord2(1.0f, 0.0f);GL.Vertex3(GetVertices()[0].X, GetVertices()[0].Y, GetVertices()[0].Z);    // UR
             GL.TexCoord2(0.0f, 0.0f);GL.Vertex3(GetVertices()[1].X, GetVertices()[1].Y, GetVertices()[1].Z);    // UL

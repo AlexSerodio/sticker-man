@@ -6,6 +6,7 @@ namespace stick_man
 {
     public class World
     {
+
         private Ground ground;
         private Camera camera;
 

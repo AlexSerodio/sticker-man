@@ -11,6 +11,7 @@ namespace stick_man
 
     private World world;
     private Stickman player;
+    private Background background;
 
     private Vector3 eye;
     private Vector3 target;
@@ -26,6 +27,8 @@ namespace stick_man
 
       world = new World(width, height);
       player = new Stickman(new Ponto4D(0, 0), 0.2, world);
+
+      background = new Background();
     }
 
     protected override void OnLoad(EventArgs e)
@@ -36,7 +39,6 @@ namespace stick_man
       GL.Enable(EnableCap.DepthTest);
       GL.Enable(EnableCap.CullFace);
       GL.Enable(EnableCap.Texture2D);
-
     }
 
     protected override void OnResize(EventArgs e) 
@@ -68,6 +70,8 @@ namespace stick_man
       Matrix4 modelview = Matrix4.LookAt(eye, target, up);
       GL.MatrixMode(MatrixMode.Modelview);
       GL.LoadMatrix(ref modelview);
+
+      background.Draw();
 
       world.HandleObjects();
       player.Draw();
