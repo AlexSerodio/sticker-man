@@ -215,6 +215,9 @@ namespace stick_man
         case Key.P:
           Physics.InvertGravity();
           break;
+        case Key.BackSpace:
+          world.RemoveBoxes();
+          break;
       }
     }
   }

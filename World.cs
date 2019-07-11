@@ -156,5 +156,18 @@ namespace stick_man
 
             Global.objects.Add(box);
         }
+
+        public void RemoveBoxes()
+        {
+            for (int i = 0; i < Global.objects.Count; i++) {
+                if(Global.objects[i] is Box)
+                    Global.objects.Remove(Global.objects[i]);
+            }
+        }
+
+        public void RemovePlataforms()
+        {
+            
+        }
     }
 }
